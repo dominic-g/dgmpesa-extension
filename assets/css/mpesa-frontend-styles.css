@@ -1,0 +1,240 @@
+
+
+/* --- Waiting Page: Body & Container --- */
+body.mpesa-waiting-body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%); font-family: 'Jost', sans-serif; margin: 0; padding: 20px; box-sizing: border-box; color: #4a5568; }
+.mpesa-waiting-container { text-align: center; background: #ffffff; padding: 35px 45px 45px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 5px 10px rgba(0, 0, 0, 0.04); max-width: 550px; width: 100%; border-top: 5px solid #4CAF50; position: relative; }
+.mpesa-waiting-logo { max-width: 170px; margin-bottom: 30px; height: auto; }
+
+/* --- Waiting Page: Spinner --- */
+.mpesa-waiting-spinner { width: 60px; height: 60px; margin: 0 auto 30px; }
+.mpesa-waiting-spinner svg { animation: rotate 1.8s linear infinite; width: 100%; height: 100%; }
+.mpesa-waiting-spinner circle { stroke: #4CAF50; stroke-width: 3.5; stroke-linecap: round; animation: dash 1.4s ease-in-out infinite; stroke-dasharray: 90, 150; stroke-dashoffset: 0; fill: none; }
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+@keyframes dash { 0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; } 50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; } 100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; } }
+
+/* --- Waiting Page: Text Content --- */
+.mpesa-waiting-container h2 { font-size: 1.8em; margin-bottom: 0.6em; font-weight: 600; color: #1a202c; }
+.mpesa-waiting-container p { font-size: 1.1em; line-height: 1.65; margin-bottom: 1.3em; color: #4a5568; }
+.mpesa-instruction { font-weight: 500; color: #2d3748; }
+
+/* --- Waiting Page: Info Box --- */
+.mpesa-waiting-info { font-size: 1em; background-color: #f8f9fa; padding: 15px 20px; border-radius: 6px; border: 1px solid #e9ecef; margin: 2em 0 1.5em; line-height: 1.6; }
+.mpesa-waiting-info p { margin-bottom: 0.5em; font-size: 1em; color: #4a5568; }
+.mpesa-waiting-info p:last-child { margin-bottom: 0; }
+.mpesa-waiting-info strong { color: #1a202c; font-weight: 600; }
+.mpesa-waiting-info small { display: block; margin-top: 10px; font-size: 0.85em; color: #718096; }
+
+/* --- Waiting Page: Upgrade Notice --- */
+.mpesa-waiting-upgrade-notice.promo-box { background: linear-gradient(135deg, #fffaf0, #fffef5); border: 1px solid #ffe58f; border-left: 4px solid #ffb400; border-radius: 6px; padding: 20px 25px; margin: 30px 0; text-align: center; position: relative; box-shadow: 0 3px 8px rgba(255, 180, 0, 0.1); }
+.mpesa-waiting-upgrade-notice .promo-icon { position: absolute; top: 10px; left: 10px; font-size: 1.8em; color: #ffb400; opacity: 0.8; }
+.mpesa-waiting-upgrade-notice h4 { font-size: 1.25em; font-weight: 600; margin: 0 0 0.6em 0; color: #b38600; }
+.mpesa-waiting-upgrade-notice p { font-size: 1em; margin-bottom: 1.2em; color: #665000; line-height: 1.6; }
+
+/* --- Waiting Page: Upgrade Button & Pulse --- */
+.button.mpesa-upgrade-cta { display: inline-flex; align-items: center; background: #4CAF50; color: #fff !important; padding: 10px 22px; border-radius: 5px; text-decoration: none; font-weight: 600; font-size: 1.05em; border: none; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3); }
+.button.mpesa-upgrade-cta:hover { background-color: #388e3c; color: #fff !important; text-decoration: none; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4); }
+.button.mpesa-upgrade-cta .dashicons { margin-left: 8px; font-size: 1.1em; line-height: 1; transition: transform 0.2s ease; }
+.button.mpesa-upgrade-cta:hover .dashicons { transform: translateX(3px); }
+.pulse-button { animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
+
+/* --- Waiting Page: Account Link --- */
+.mpesa-account-link { margin-top: 1.8em; font-size: 1em; }
+.mpesa-account-link a { color: #135e96; text-decoration: none; font-weight: 500; border-bottom: 1px dotted #135e96; padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+.mpesa-account-link a:hover { text-decoration: none; color: #0a4b78; border-color: #0a4b78; }
+
+/* --- Checkout Page Field Styles --- */
+div.dg-mpesa-checkout-wrapper { padding: 20px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; margin: 0 0 1.5em; font-family: 'Jost', sans-serif !important; font-size: 16px !important; }
+div.dg-mpesa-checkout-description { font-size: 1em; margin-bottom: 1.2em !important; color: #4b5563; line-height: 1.6; }
+div.dg-mpesa-checkout-field { margin-bottom: 0 !important; }
+div.dg-mpesa-checkout-field label { display: block; margin-bottom: 0.6em; font-weight: 600; font-size: 0.95em; color: #374151; }
+div.dg-mpesa-checkout-field label .required { color: #ef4444; margin-left: 3px; font-weight: normal; }
+div.dg-mpesa-checkout-field input[type="text"] { padding: 0.8em 1em !important; width: 100% !important; border: 1px solid #d1d5db; border-radius: 5px; box-sizing: border-box; font-family: 'Jost', sans-serif; font-size: 1em; color: #1f2937; transition: border-color 0.2s, box-shadow 0.2s; }
+div.dg-mpesa-checkout-field input[type="text"]:focus { border-color: #4CAF50; box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2); outline: none; }
+div.dg-mpesa-checkout-field input[type="text"]::placeholder { color: #9ca3af; opacity: 1; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Core Resets for the Waiting Body */
+.mpesa-waiting-body {
+    background-color: #f0f2f5 !important; /* Light background for a clean look */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Jost', sans-serif; /* Assumed font from enqueue */
+    /* !important to try and override theme padding/margins */
+    padding: 0 !important;
+}
+
+/* Override Admin Bar Space */
+.mpesa-waiting-body.admin-bar {
+    padding-top: 0 !important;
+}
+
+/* Hide theme content and focus on the waiting box */
+/* This is a hacky fix for when the page content is not cleanly bypassed */
+.mpesa-waiting-body > *:not(#mpesa-waiting-container-main):not(#wpadminbar):not(script):not(style):not(link) {
+    display: none !important; 
+    /* This aggressively hides elements not part of the waiting screen or WordPress admin/scripts */
+}
+
+
+/* Main Container Styling */
+.mpesa-waiting-container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    transform: translateY(-50px); /* Lift slightly off-center for visual balance */
+    margin-top: 50px; /* Offset the transform */
+}
+
+/* Logo Styling */
+.mpesa-waiting-logo {
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 25px;
+}
+
+/* Title and Instructions */
+.mpesa-waiting-container h2 {
+    color: #172b4d;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.mpesa-instruction {
+    color: #505f79;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+/* Spinner Styling (Standard M-Pesa Brand Colors) */
+.mpesa-waiting-spinner {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 30px;
+}
+
+.mpesa-waiting-spinner svg {
+    animation: rotate 2s linear infinite;
+    height: 100%;
+    transform-origin: center center;
+    width: 100%;
+    position: relative;
+}
+
+.mpesa-waiting-spinner circle {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+    stroke-linecap: round;
+    stroke-width: 3;
+    fill: none;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -35px;
+    }
+    100% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -124px;
+    }
+}
+
+@keyframes color {
+    0%, 100% { stroke: #4CAF50; } /* Standard Green */
+    40% { stroke: #2196F3; }
+    66% { stroke: #FF9800; }
+    80%, 90% { stroke: #F44336; }
+}
+
+
+/* Order Info Block */
+.mpesa-waiting-info {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e1e4e8;
+    text-align: left;
+}
+
+.mpesa-waiting-info p {
+    margin: 5px 0;
+    color: #505f79;
+    font-size: 0.95rem;
+}
+
+.mpesa-waiting-info strong {
+    font-weight: 700;
+    color: #172b4d;
+    display: inline-block;
+    min-width: 120px;
+}
+
+.mpesa-waiting-info em {
+    display: block;
+    margin-top: 10px;
+    color: #2ecc71; /* Payment status color */
+    font-style: normal;
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .mpesa-waiting-container {
+        padding: 30px 20px;
+    }
+    .mpesa-waiting-container h2 {
+        font-size: 1.5rem;
+    }
+    .mpesa-waiting-info strong {
+        display: block;
+        min-width: auto;
+    }
+}
