@@ -189,7 +189,8 @@ function dg_mpesa_checkout_poll_status() {
         // Payment failed, redirect to view order page (to see failure note)
         wp_send_json_success( [
             'status'   => 'failure',
-            'redirect' => $order->get_view_order_url()
+            // 'redirect' => $order->get_view_order_url(),
+            'redirect' => $order->get_checkout_order_received_url()
         ] );
     } else {
         // Still pending/on-hold, keep polling
