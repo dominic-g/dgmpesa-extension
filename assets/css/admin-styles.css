@@ -1,48 +1,48 @@
 
 
 /* --- Globals & Font & Transitions--- */
-.finachub-admin-wrap, .finachub-admin-wrap * { font-family: 'Jost', sans-serif; box-sizing: border-box; }
-.finachub-admin-wrap .dashicons, .finachub-admin-wrap .dashicons-before:before { display: inline-block; width: 20px; height: 20px; font-size: 20px; line-height: 1; font-family: 'dashicons'; text-decoration: inherit; font-weight: normal; font-style: normal; vertical-align: top; text-align: center; transition: color .1s ease-in 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.dg-admin-wrap, .dg-admin-wrap * { font-family: 'Jost', sans-serif; box-sizing: border-box; }
+.dg-admin-wrap .dashicons, .dg-admin-wrap .dashicons-before:before { display: inline-block; width: 20px; height: 20px; font-size: 20px; line-height: 1; font-family: 'dashicons'; text-decoration: inherit; font-weight: normal; font-style: normal; vertical-align: top; text-align: center; transition: color .1s ease-in 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; }
 
 /* --- Layout: Wrapper, Header, Footer --- */
-.finachub-admin-wrap { max-width: 1100px; margin: 25px auto; background: #f8f9fa; border: 1px solid #dee2e6; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); border-radius: 8px; overflow: hidden; }
-.finachub-admin-header { display: flex; align-items: center; padding: 18px 30px; background: #ffffff; border-bottom: 1px solid #dee2e6; border-top: 5px solid #4CAF50; /* Green Accent */ }
-.finachub-header-logo { height: 40px; width: auto; margin-right: 20px; border-radius: 4px; vertical-align: middle; }
-.finachub-admin-header h1 { font-size: 1.9em; font-weight: 700; margin: 0; padding: 0; line-height: 1.3; color: #212529; }
-.finachub-version-tag { margin-left: auto; background-color: #e9ecef; color: #495057; font-size: 0.85em; font-weight: 600; padding: 5px 12px; border-radius: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
-.finachub-admin-footer { padding: 20px 30px; background-color: #f1f3f5; border-top: 1px solid #dee2e6; text-align: center; font-size: 0.95em; color: #6c757d; }
-.finachub-admin-footer a { color: #4CAF50; font-weight: 600; text-decoration: none; transition: color 0.2s; }
-.finachub-admin-footer a:hover { text-decoration: underline; color: #388e3c; }
+.dg-admin-wrap { max-width: 1100px; margin: 25px auto; background: #f8f9fa; border: 1px solid #dee2e6; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); border-radius: 8px; overflow: hidden; }
+.dg-admin-header { display: flex; align-items: center; padding: 18px 30px; background: #ffffff; border-bottom: 1px solid #dee2e6; border-top: 5px solid #4CAF50; /* Green Accent */ }
+.dg-header-logo { height: 40px; width: auto; margin-right: 20px; border-radius: 4px; vertical-align: middle; }
+.dg-admin-header h1 { font-size: 1.9em; font-weight: 700; margin: 0; padding: 0; line-height: 1.3; color: #212529; }
+.dg-version-tag { margin-left: auto; background-color: #e9ecef; color: #495057; font-size: 0.85em; font-weight: 600; padding: 5px 12px; border-radius: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+.dg-admin-footer { padding: 20px 30px; background-color: #f1f3f5; border-top: 1px solid #dee2e6; text-align: center; font-size: 0.95em; color: #6c757d; }
+.dg-admin-footer a { color: #4CAF50; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+.dg-admin-footer a:hover { text-decoration: underline; color: #388e3c; }
 
 /* --- Content Area & Base Elements --- */
-.finachub-admin-content { padding: 35px 40px; font-size: 16px; line-height: 1.8; color: #495057; }
-.finachub-admin-content p, .finachub-admin-content ul, .finachub-admin-content ol { margin-bottom: 1.6em; }
-.finachub-admin-content p:last-child, .finachub-admin-content ul:last-child, .finachub-admin-content ol:last-child { margin-bottom: 0; }
-.finachub-admin-content h2, .finachub-admin-content h3, .finachub-admin-content h4 { color: #212529; font-weight: 600; margin: 2em 0 1.2em; line-height: 1.4; display: flex; align-items: center; padding-bottom: 0.4em; border-bottom: 1px solid #e9ecef; }
-.finachub-admin-content h2 { font-size: 1.8em; }
-.finachub-admin-content h3 { font-size: 1.5em; }
-.finachub-admin-content h4 { font-size: 1.25em; border-bottom: none; margin-bottom: 0.8em;}
-.finachub-admin-content h2 .dashicons, .finachub-admin-content h3 .dashicons, .finachub-admin-content h4 .dashicons { margin-right: 12px; font-size: 1em; line-height: 1; height: auto; width: auto; vertical-align: middle; color: #388e3c; }
-.finachub-admin-content ul, .finachub-admin-content ol { padding-left: 30px; }
-.finachub-admin-content ul { list-style: disc; }
-.finachub-admin-content ol { list-style: decimal; }
-.finachub-admin-content ul li, .finachub-admin-content ol li { margin-bottom: 1.1em; padding-left: 5px; }
-.finachub-admin-content ul li::marker { color: #4CAF50; font-size: 1.1em; }
-.finachub-admin-content ul ul, .finachub-admin-content ol ol, .finachub-admin-content ul ol, .finachub-admin-content ol ul { margin: 1em 0 1.2em 25px; padding-left: 20px; }
-.finachub-admin-content ul ul li::marker, .finachub-admin-content ol ul li::marker { font-size: 1em; color: #adb5bd; }
-.finachub-admin-content ol ol { list-style: lower-alpha; }
-.finachub-admin-content ol ol li::marker { color: #4CAF50; }
-.finachub-admin-content ul ul li, .finachub-admin-content ol ol li, .finachub-admin-content ul ol li, .finachub-admin-content ol ul li { font-size: 0.95em; margin-bottom: 0.7em; }
-.finachub-admin-content strong { font-weight: 600; color: #343a40; }
-.finachub-admin-content code { background: #e9ecef; padding: 0.25em 0.6em; border-radius: 4px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 0.9em; border: 1px solid #dee2e6; color: #495057; word-break: break-all; }
-.finachub-admin-content small { font-size: 0.85em; color: #6c757d; }
-.finachub-admin-content a { color: #4CAF50; text-decoration: none; font-weight: 500; transition: color 0.2s; }
-.finachub-admin-content a:hover { color: #388e3c; text-decoration: underline; }
+.dg-admin-content { padding: 35px 40px; font-size: 16px; line-height: 1.8; color: #495057; }
+.dg-admin-content p, .dg-admin-content ul, .dg-admin-content ol { margin-bottom: 1.6em; }
+.dg-admin-content p:last-child, .dg-admin-content ul:last-child, .dg-admin-content ol:last-child { margin-bottom: 0; }
+.dg-admin-content h2, .dg-admin-content h3, .dg-admin-content h4 { color: #212529; font-weight: 600; margin: 2em 0 1.2em; line-height: 1.4; display: flex; align-items: center; padding-bottom: 0.4em; border-bottom: 1px solid #e9ecef; }
+.dg-admin-content h2 { font-size: 1.8em; }
+.dg-admin-content h3 { font-size: 1.5em; }
+.dg-admin-content h4 { font-size: 1.25em; border-bottom: none; margin-bottom: 0.8em;}
+.dg-admin-content h2 .dashicons, .dg-admin-content h3 .dashicons, .dg-admin-content h4 .dashicons { margin-right: 12px; font-size: 1em; line-height: 1; height: auto; width: auto; vertical-align: middle; color: #388e3c; }
+.dg-admin-content ul, .dg-admin-content ol { padding-left: 30px; }
+.dg-admin-content ul { list-style: disc; }
+.dg-admin-content ol { list-style: decimal; }
+.dg-admin-content ul li, .dg-admin-content ol li { margin-bottom: 1.1em; padding-left: 5px; }
+.dg-admin-content ul li::marker { color: #4CAF50; font-size: 1.1em; }
+.dg-admin-content ul ul, .dg-admin-content ol ol, .dg-admin-content ul ol, .dg-admin-content ol ul { margin: 1em 0 1.2em 25px; padding-left: 20px; }
+.dg-admin-content ul ul li::marker, .dg-admin-content ol ul li::marker { font-size: 1em; color: #adb5bd; }
+.dg-admin-content ol ol { list-style: lower-alpha; }
+.dg-admin-content ol ol li::marker { color: #4CAF50; }
+.dg-admin-content ul ul li, .dg-admin-content ol ol li, .dg-admin-content ul ol li, .dg-admin-content ol ul li { font-size: 0.95em; margin-bottom: 0.7em; }
+.dg-admin-content strong { font-weight: 600; color: #343a40; }
+.dg-admin-content code { background: #e9ecef; padding: 0.25em 0.6em; border-radius: 4px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 0.9em; border: 1px solid #dee2e6; color: #495057; word-break: break-all; }
+.dg-admin-content small { font-size: 0.85em; color: #6c757d; }
+.dg-admin-content a { color: #4CAF50; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.dg-admin-content a:hover { color: #388e3c; text-decoration: underline; }
 .intro-text { font-size: 1.25em; color: #495057; text-align: center; margin: 0 auto 3em; padding-bottom: 1.8em; border-bottom: 1px solid #dee2e6; max-width: 75%; line-height: 1.7; }
 
 /* --- General Card & Promo Styles --- */
-.finachub-card {
+.dg-card {
     background-color: #ffffff;
     border: 1px solid #e9ecef;
     border-radius: 12px;
@@ -53,18 +53,18 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     overflow: hidden;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
-.finachub-card:hover {
+.dg-card:hover {
     box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
     transform: translateY(-2px);
 }
-.finachub-promo-card { border-left: 6px solid #4CAF50; background-color: #f3f9f3; }
-.finachub-promo-card h2, .finachub-promo-card h3, .finachub-promo-card h4 { color: #2e7d32; margin-top: 0; border-bottom-color: #a5d6a7; }
-.finachub-promo-card .dashicons { color: #4CAF50; }
-.finachub-promo-icon { position: absolute; font-size: 7em; opacity: 0.06; color: #4CAF50 !important; top: -25px; right: -25px; transform: rotate(-15deg); z-index: 0; line-height: 1; }
-.finachub-promo-icon.small { font-size: 4em; top: 10px; right: 10px; opacity: 0.08; }
-.finachub-promo-card p.subtitle, .finachub-promo-card p.promo-lead { font-size: 1.15em; color: #33691e; margin-bottom: 1.5em; position: relative; z-index: 1; }
+.dg-promo-card { border-left: 6px solid #4CAF50; background-color: #f3f9f3; }
+.dg-promo-card h2, .dg-promo-card h3, .dg-promo-card h4 { color: #2e7d32; margin-top: 0; border-bottom-color: #a5d6a7; }
+.dg-promo-card .dashicons { color: #4CAF50; }
+.dg-promo-icon { position: absolute; font-size: 7em; opacity: 0.06; color: #4CAF50 !important; top: -25px; right: -25px; transform: rotate(-15deg); z-index: 0; line-height: 1; }
+.dg-promo-icon.small { font-size: 4em; top: 10px; right: 10px; opacity: 0.08; }
+.dg-promo-card p.subtitle, .dg-promo-card p.promo-lead { font-size: 1.15em; color: #33691e; margin-bottom: 1.5em; position: relative; z-index: 1; }
 /* --- Dashboard Specific Notice Card --- */
-.finachub-admin-notice { /* Renamed for consistency & specificity */
+.dg-admin-notice { /* Renamed for consistency & specificity */
     border-left: 5px solid #ff9800;
     background-color: #fffbe6;
     color: #663c00;
@@ -72,16 +72,16 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     padding-top: 25px;
     padding-bottom: 25px;
 }
-.finachub-notice-card h4 {
+.dg-notice-card h4 {
     color: #e65100;
     border-bottom-color: #ffecb3;
     margin-bottom: 1.5em;
     padding-bottom: 0.8em;
 }
-.finachub-notice-card h4 .dashicons {
+.dg-notice-card h4 .dashicons {
     color: #f57c00;
 }
-.manual-task-notice .finachub-cta-section {
+.manual-task-notice .dg-cta-section {
     margin-top: 1.5em;
 }
 .manual-task-notice p {
@@ -92,65 +92,65 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
 .manual-task-notice p strong {
     color: #663c00;
 }
-.manual-task-notice a.finachub-cta-button {
+.manual-task-notice a.dg-cta-button {
     margin-bottom: 0; /* No discount note below */
 }
 
 
 /* --- Buttons & CTA --- */
-.finachub-cta-button { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 8px; font-size: 1.05em; font-weight: 600; text-decoration: none !important; cursor: pointer; border: none; transition: all 0.25s ease; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); white-space: nowrap; }
-.finachub-cta-button .dashicons { margin-right: 10px; font-size: 1.2em; line-height: 1; height: 1em; width: 1em; vertical-align: -2px; }
-.finachub-cta-button.primary { background-color: #4CAF50; color: #ffffff !important; }
-.finachub-cta-button.primary:hover, .finachub-cta-button.primary:focus { background-color: #388e3c; color: #ffffff !important; transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); outline: none; }
-.finachub-cta-button.secondary { background-color: #66bb6a; color: #ffffff !important; border: 1px solid #5aae5e; }
-.finachub-cta-button.secondary:hover, .finachub-cta-button.secondary:focus { background-color: #4caf50; color: #ffffff !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); outline: none; }
-.finachub-cta-button.small { padding: 9px 18px; font-size: 0.95em; }
-.finachub-cta-button.small .dashicons { margin-right: 8px; font-size: 1.1em;}
-.finachub-cta-section { text-align: center; margin-top: 2em; position: relative; z-index: 1; }
-.finachub-cta-section.mini-cta { margin-top: 1.5em; }
-.finachub-cta-section p.cta-lead { font-size: 1.2em; margin-bottom: 1.2em; color: #33691e; font-weight: 500; }
+.dg-cta-button { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 8px; font-size: 1.05em; font-weight: 600; text-decoration: none !important; cursor: pointer; border: none; transition: all 0.25s ease; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); white-space: nowrap; }
+.dg-cta-button .dashicons { margin-right: 10px; font-size: 1.2em; line-height: 1; height: 1em; width: 1em; vertical-align: -2px; }
+.dg-cta-button.primary { background-color: #4CAF50; color: #ffffff !important; }
+.dg-cta-button.primary:hover, .dg-cta-button.primary:focus { background-color: #388e3c; color: #ffffff !important; transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); outline: none; }
+.dg-cta-button.secondary { background-color: #66bb6a; color: #ffffff !important; border: 1px solid #5aae5e; }
+.dg-cta-button.secondary:hover, .dg-cta-button.secondary:focus { background-color: #4caf50; color: #ffffff !important; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); outline: none; }
+.dg-cta-button.small { padding: 9px 18px; font-size: 0.95em; }
+.dg-cta-button.small .dashicons { margin-right: 8px; font-size: 1.1em;}
+.dg-cta-section { text-align: center; margin-top: 2em; position: relative; z-index: 1; }
+.dg-cta-section.mini-cta { margin-top: 1.5em; }
+.dg-cta-section p.cta-lead { font-size: 1.2em; margin-bottom: 1.2em; color: #33691e; font-weight: 500; }
 .discount-note { font-style: italic; color: #e53935; font-weight: 500; margin-top: 1.5em; font-size: 0.95em; text-align: center; }
 
 
 /* --- Minimalist Dashboard --- */
-.finachub-dashboard-container-minimal {
+.dg-dashboard-container-minimal {
     padding: 1rem;
 }
 
-.finachub-dashboard-header-minimal {
+.dg-dashboard-header-minimal {
     margin-bottom: 1rem; /* Reduced space between header and cards below */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.finachub-dashboard-header-minimal h2 {
+.dg-dashboard-header-minimal h2 {
     font-size: 2rem;
     font-weight: 700;
     color: #2c3e50;
     margin-bottom: 0.5rem;
 }
 
-.finachub-dashboard-header-minimal p {
+.dg-dashboard-header-minimal p {
     font-size: 1.1rem;
     color: #7f8c8d;
     max-width: 600px;
     margin: 0 auto;
 }
 
-.finachub-features-grid-minimal {
+.dg-features-grid-minimal {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
 }
 
 @media (min-width: 768px) {
-    .finachub-features-grid-minimal {
+    .dg-features-grid-minimal {
         grid-template-columns: 1fr 1fr;
     }
 }
 
-.finachub-feature-card-minimal {
+.dg-feature-card-minimal {
     background-color: #ffffff;
     border-radius: 12px;
     padding: 2rem;
@@ -159,12 +159,12 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     border: 1px solid #e0e0e0;
 }
 
-.finachub-feature-card-minimal:hover {
+.dg-feature-card-minimal:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.finachub-feature-card-minimal h3 {
+.dg-feature-card-minimal h3 {
     font-size: 1.4rem;
     font-weight: 600;
     color: #34495e;
@@ -173,13 +173,13 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     text-align: center;
 }
 
-.finachub-features-list-minimal {
+.dg-features-list-minimal {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.finachub-features-list-minimal li {
+.dg-features-list-minimal li {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
@@ -187,34 +187,34 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     color: #34495e;
 }
 
-.finachub-features-list-minimal .dashicons {
+.dg-features-list-minimal .dashicons {
     margin-right: 10px;
 }
 
-.finachub-feature-card-minimal.free .dashicons-yes-alt {
+.dg-feature-card-minimal.free .dashicons-yes-alt {
     color: #27ae60;
 }
 
-.finachub-feature-card-minimal.free .dashicons-no-alt {
+.dg-feature-card-minimal.free .dashicons-no-alt {
     color: #c0392b;
 }
 
-.finachub-feature-card-minimal.pro {
+.dg-feature-card-minimal.pro {
     border-top: 4px solid #27ae60;
 }
 
-.finachub-feature-card-minimal.pro .dashicons-yes-alt {
+.dg-feature-card-minimal.pro .dashicons-yes-alt {
     color: #27ae60;
 }
 
-.finachub-button-group-minimal {
+.dg-button-group-minimal {
     margin-top: 2rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.finachub-button-minimal {
+.dg-button-minimal {
     display: block;
     padding: 0.85rem 1rem;
     border-radius: 8px;
@@ -225,23 +225,23 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     border: 1px solid transparent;
 }
 
-.finachub-upgrade-button-minimal {
+.dg-upgrade-button-minimal {
     background-color: #27ae60;
     color: #ffffff !important;
 }
 
-.finachub-upgrade-button-minimal:hover {
+.dg-upgrade-button-minimal:hover {
     background-color: #2ecc71;
     transform: translateY(-2px);
 }
 
-.finachub-demo-button-minimal {
+.dg-demo-button-minimal {
     background-color: transparent;
     color: #27ae60 !important;
     border-color: #27ae60;
 }
 
-.finachub-demo-button-minimal:hover {
+.dg-demo-button-minimal:hover {
     background-color: #27ae60;
     color: #ffffff !important;
     transform: translateY(-2px);
@@ -249,16 +249,16 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
 
 
 /* --- Settings Guide Page (Minimalist) --- */
-.finachub-settings-container-minimal {
+.dg-settings-container-minimal {
     padding: 2rem;
 }
 
-.finachub-settings-header-minimal {
+.dg-settings-header-minimal {
     text-align: center;
     margin-bottom: 3rem;
 }
 
-.finachub-settings-header-minimal h2 {
+.dg-settings-header-minimal h2 {
     font-size: 2.0rem; /* Reduced font size */
     font-weight: 700;
     color: #333;
@@ -269,14 +269,14 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     margin-right: auto;
 }
 
-.finachub-settings-header-minimal p {
+.dg-settings-header-minimal p {
     font-size: 1.1rem;
     color: #666;
     max-width: 600px;
     margin: 0 auto;
 }
 
-.finachub-settings-card-minimal {
+.dg-settings-card-minimal {
     background-color: #fff;
     border-radius: 10px;
     padding: 2rem;
@@ -285,11 +285,11 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     transition: transform 0.3s ease;
 }
 
-.finachub-settings-card-minimal:hover {
+.dg-settings-card-minimal:hover {
     transform: translateY(-5px);
 }
 
-.finachub-settings-card-minimal h3 {
+.dg-settings-card-minimal h3 {
     font-size: 1.5rem;
     font-weight: 600;
     color: #333;
@@ -299,41 +299,41 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     align-items: center;
 }
 
-.finachub-settings-card-minimal h3 .dashicons {
+.dg-settings-card-minimal h3 .dashicons {
     margin-right: 10px;
     color: #4CAF50;
 }
 
-.finachub-settings-card-minimal p {
+.dg-settings-card-minimal p {
     font-size: 1.1rem;
     color: #666;
     margin: 0;
 }
 
-.finachub-settings-card-minimal a {
+.dg-settings-card-minimal a {
     color: #4CAF50;
     text-decoration: none;
     font-weight: 600;
 }
 
-.finachub-settings-card-minimal a:hover {
+.dg-settings-card-minimal a:hover {
     text-decoration: underline;
 }
 
 /* --- Help & Support Page (Comprehensive) --- */
-.finachub-help-section {
+.dg-help-section {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid #eee;
 }
 
-.finachub-help-section:first-child {
+.dg-help-section:first-child {
     margin-top: 0;
     padding-top: 0;
     border-top: none;
 }
 
-.finachub-help-section strong {
+.dg-help-section strong {
     display: block;
     font-size: 1.1rem;
     font-weight: 600;
@@ -341,28 +341,28 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     margin-bottom: 0.5rem;
 }
 
-.finachub-help-checklist {
+.dg-help-checklist {
     list-style: disc;
     padding-left: 20px;
     margin-top: 1rem;
 }
 
-.finachub-help-checklist li {
+.dg-help-checklist li {
     margin-bottom: 0.75rem;
 }
 
-.finachub-pro-card-minimal {
+.dg-pro-card-minimal {
     background-color: #f1f8e9;
     border-left: 4px solid #4CAF50;
 }
 
-.finachub-pro-features-list {
+.dg-pro-features-list {
     list-style: none;
     padding: 0;
     margin: 1.5rem 0;
 }
 
-.finachub-pro-features-list li {
+.dg-pro-features-list li {
     display: flex;
     align-items: flex-start; /* Align items to the start for longer text */
     margin-bottom: 1rem;
@@ -370,13 +370,13 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     color: #333;
 }
 
-.finachub-pro-features-list .dashicons {
+.dg-pro-features-list .dashicons {
     color: #4CAF50;
     margin-right: 10px;
     margin-top: 4px; /* Adjust icon position */
 }
 
-.finachub-pro-button {
+.dg-pro-button {
     display: inline-block;
     background-color: #4CAF50;
     color: #fff !important; /* Ensure text is white */
@@ -387,19 +387,19 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     transition: all 0.3s ease;
 }
 
-.finachub-pro-button:hover {
+.dg-pro-button:hover {
     background-color: #388e3c;
     transform: translateY(-2px);
     text-decoration: none;
 }
 
-.finachub-help-links {
+.dg-help-links {
     margin-top: 1.5rem;
     display: flex;
     gap: 1rem;
 }
 
-.finachub-help-link-button {
+.dg-help-link-button {
     display: inline-flex;
     align-items: center;
     background-color: #f5f5f5;
@@ -412,32 +412,32 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     border: 1px solid #e0e0e0;
 }
 
-.finachub-help-link-button:hover {
+.dg-help-link-button:hover {
     background-color: #e0e0e0;
     border-color: #ccc;
     text-decoration: none;
 }
 
-.finachub-help-link-button .dashicons {
+.dg-help-link-button .dashicons {
     margin-right: 8px;
 }
 
 /* --- Credentials Section in Minimalist Settings --- */
-.finachub-credentials-minimal {
+.dg-credentials-minimal {
     margin-top: 1.5rem;
     border-top: 1px solid #eee;
     padding-top: 1.5rem;
 }
 
-.finachub-credential-item-minimal {
+.dg-credential-item-minimal {
     margin-bottom: 1.5rem;
 }
 
-.finachub-credential-item-minimal:last-child {
+.dg-credential-item-minimal:last-child {
     margin-bottom: 0;
 }
 
-.finachub-credential-item-minimal strong {
+.dg-credential-item-minimal strong {
     display: block;
     font-size: 1.1rem;
     font-weight: 600;
@@ -445,13 +445,13 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     margin-bottom: 0.25rem;
 }
 
-.finachub-credential-item-minimal p {
+.dg-credential-item-minimal p {
     font-size: 1.0rem !important; /* Override general p style */
     color: #666;
     margin: 0;
 }
 
-.finachub-sandbox-code {
+.dg-sandbox-code {
     margin-top: 0.5rem !important;
     background-color: #f5f5f5;
     padding: 0.75rem 1rem;
@@ -461,12 +461,12 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     color: #555;
 }
 
-.finachub-sandbox-code strong {
+.dg-sandbox-code strong {
     color: #333;
     font-weight: 600;
 }
 
-.finachub-sandbox-code code {
+.dg-sandbox-code code {
     background-color: #e0e0e0;
     padding: 3px 6px;
     border-radius: 3px;
@@ -477,7 +477,7 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
 
 
 /* --- WC Settings Page: Pro Teaser Section --- */
-.finachub-pro-settings-teaser {
+.dg-pro-settings-teaser {
     background-color: #f9fbe7;
     border: 1px solid #f0f4c3;
     border-radius: 8px;
@@ -489,17 +489,17 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     overflow: hidden;
     border-left: 5px solid #ffeb3b; /* Amber color for attention */
 }
-.finachub-pro-settings-teaser h3 {
+.dg-pro-settings-teaser h3 {
     color: #f9a825; /* Darker amber */
     margin-top: 0;
     margin-bottom: 1.5em;
     border-bottom: 1px solid #fff9c4;
     padding-bottom: 1em;
 }
-.finachub-pro-settings-teaser h3 .dashicons {
+.dg-pro-settings-teaser h3 .dashicons {
      color: #fbc02d; /* Lighter amber icon */
 }
-.finachub-pro-settings-teaser .intro-text {
+.dg-pro-settings-teaser .intro-text {
     text-align: left;
     max-width: 100%;
     margin-bottom: 2.5em;
@@ -560,10 +560,10 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
     letter-spacing: 0.3px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-.finachub-pro-settings-teaser .finachub-cta-section {
+.dg-pro-settings-teaser .dg-cta-section {
     margin-top: 1.5em;
 }
-.finachub-pro-settings-teaser .finachub-cta-section .cta-lead {
+.dg-pro-settings-teaser .dg-cta-section .cta-lead {
     font-size: 1.15em;
     color: #333;
     font-weight: 600;
@@ -601,10 +601,10 @@ body.wp-admin { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Robo
 .feature-icon, .pro-benefits-list li .dashicons, .troubleshooting-list li .dashicons { position: absolute; left: 0; top: 5px; font-size: 1.5em !important; line-height: 1; }
 
 /* --- Fix for WP Admin Notices within Plugin Pages --- */
-.finachub-admin-wrap > .notice,
-.finachub-admin-wrap > div.error,
-.finachub-admin-wrap > div.updated,
-.finachub-admin-wrap > .update-nag {
+.dg-admin-wrap > .notice,
+.dg-admin-wrap > div.error,
+.dg-admin-wrap > div.updated,
+.dg-admin-wrap > .update-nag {
 	margin: 20px 30px 15px 30px; padding: 10px 15px; position: relative; z-index: 1; clear: both; box-shadow: 0 1px 1px rgba(0,0,0,.04); border-left-width: 4px;
 }
-.finachub-admin-content { padding-top: 35px; } /* Ensure content doesn't jump */
+.dg-admin-content { padding-top: 35px; } /* Ensure content doesn't jump */
