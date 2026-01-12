@@ -212,11 +212,23 @@ function dg_mpesa_checkout_render_waiting_page( $order_id ) {
 
     $logo_url = DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png';
 
+    $font_url = 'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap';
+    $style_url = DG_MPESA_PLUGIN_URL . 'assets/css/mpesa-frontend-styles.css'; 
+
     ?>
     <!DOCTYPE html>
     <html <?php language_attributes(); ?>>
+  
     <head>
-    // ... (head content remains the same)
+        <meta charset="<?php bloginfo( 'charset' ); ?>" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <!-- DIRECT EMBED OF ESSENTIAL STYLES FOR RELIABILITY -->
+        <link rel="stylesheet" href="<?php echo esc_url( $font_url ); ?>" type="text/css"> 
+        <link rel="stylesheet" href="<?php echo esc_url( $style_url ); ?>" type="text/css" media="all">
+        
+        <?php wp_head(); // For the enqueued JS script and other critical head elements ?>
+        <title><?php esc_html_e( 'Awaiting M-Pesa Payment', 'finachub-checkout-for-m-pesa' ); ?></title>
     </head>
     <body <?php body_class( 'mpesa-waiting-body' ); ?>>
         <div id="mpesa-waiting-container-main" class="mpesa-waiting-container">

@@ -102,7 +102,7 @@ class DG_Mpesa_Checkout_Gateway extends WC_Payment_Gateway {
             'callback_url' => [
                 'title'       => 'Callback URL',
                 'type'        => 'text',
-                'description' => 'HTTPS callback URL. (The free version does not fully process callbacks.)',
+                'description' => 'HTTPS callback URL.',
                 'default'     => $default_callback,
             ],
             'environment' => [
