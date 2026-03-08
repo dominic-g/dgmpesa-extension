@@ -23,14 +23,13 @@ define( 'DG_MPESA_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DG_MPESA_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 
 // ---------------------------------------------------------------------------
-// Explicit includes (replaces the fragile autoloader)
+// Early includes — no WooCommerce dependency
 // ---------------------------------------------------------------------------
 
-require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-core.php';    // DG_Gateway_Installer, DG_Payment_Logger
-require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-api.php';     // DG_Mpesa_Api_Client
-require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-gateway.php'; // DG_Mpesa_Payment_Gateway
-require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-webhook.php'; // DG_Mpesa_Webhook_Handler
-require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-admin.php';   // DG_Mpesa_Admin_Panel, DG_Mpesa_Tx_Queries
+// Must be available before the activation hook fires.
+require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-core.php'; // DG_Gateway_Installer, DG_Payment_Logger
+
+// All other includes are loaded inside dg_mpesa_boot() after WooCommerce is confirmed present.
 
 // ---------------------------------------------------------------------------
 // Activation / Deactivation hooks
@@ -59,6 +58,12 @@ function dg_mpesa_boot() {
 		} );
 		return;
 	}
+
+	// Load WooCommerce-dependent classes now that WC is confirmed available.
+	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-api.php';     // DG_Mpesa_Api_Client
+	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-gateway.php'; // DG_Mpesa_Payment_Gateway
+	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-webhook.php'; // DG_Mpesa_Webhook_Handler
+	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-admin.php';   // DG_Mpesa_Admin_Panel, DG_Mpesa_Tx_Queries
 
 	load_plugin_textdomain( 'dg-checkout-for-m-pesa', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
