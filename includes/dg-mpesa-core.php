@@ -1,0 +1,64 @@
+<?php
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * DG_Payment_Logger
+ *
+ * Wraps WooCommerce's WC_Logger for plugin-specific debug messages.
+ * Logs are written only when WP_DEBUG is active.
+ */
+class DG_Payment_Logger {
+
+	private $handle = 'dg-mpesa';
+	private $wc_log;
+
+	public function __construct() {
+		$this->wc_log = class_exists( 'WC_Logger' ) ? wc_get_logger() : null;
+	}
+
+	/**
+	 * Write a message to the WooCommerce log.
+	 *
+	 * @param string $msg   The message to log.
+	 * @param string $level PSR-3 log level (debug, info, error …).
+	 */
+	public function write( $msg, $level = 'debug' ) {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && $this->wc_log ) {
+			$this->wc_log->log( $level, $msg, [ 'source' => $this->handle ] );
+		}
+	}
+}
+
+/**
+ * DG_Gateway_Installer
+ *
+ * Handles plugin activation: creates the custom transactions table.
+ */
+class DG_Gateway_Installer {
+
+	/**
+	 * Run on plugin activation.
+	 */
+	public static function setup() {
+		global $wpdb;
+		$table      = $wpdb->prefix . 'dg_mpesa_transactions';
+		$collation  = $wpdb->get_charset_collate();
+
+		$ddl = "CREATE TABLE IF NOT EXISTS {$table} (
+			id            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+			order_id      BIGINT(20) UNSIGNED NOT NULL,
+			transaction_id VARCHAR(100) NOT NULL,
+			phone_number  VARCHAR(20) NOT NULL,
+			amount        DECIMAL(10,2) NOT NULL,
+			status        VARCHAR(50) NOT NULL,
+			date_created  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (id)
+		) {$collation};";
+
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta( $ddl );
+	}
+
+	/** Run on plugin deactivation (placeholder). */
+	public static function teardown() {}
+}

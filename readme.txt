@@ -1,4 +1,4 @@
-=== Finachub Lipa na Mpesa Checkout for WooCommerce ===
+=== DG Lipa na Mpesa Checkout for WooCommerce ===
 Contributors: Dominic_N
 Tags: mpesa, woocommerce, payments, lipa na mpesa, mobile money
 Requires at least: 5.0
