@@ -24,7 +24,8 @@ class DG_Mpesa_Webhook_Handler {
 	/** Process an inbound M-Pesa callback POST request. */
 	public function handle_incoming() {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-		$raw  = @file_get_contents( 'php://input' );
+		$raw  = file_get_contents( 'php://input' );
+		$raw  = ( false !== $raw ) ? $raw : '';
 		$data = json_decode( $raw, true );
 
 		$this->log->write( 'Received callback: ' . $raw );

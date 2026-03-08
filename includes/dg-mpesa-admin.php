@@ -2,6 +2,18 @@
 defined( 'ABSPATH' ) || exit;
 
 // ---------------------------------------------------------------------------
+// Free helper: returns extra CSS for the analytics dashboard.
+// Kept outside the class so wp_add_inline_style() can reference it simply.
+// ---------------------------------------------------------------------------
+
+function dg_mpesa_analytics_inline_css() {
+	return '
+.dg-kpi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:28px; }
+@media (max-width:768px){ .dg-kpi-grid{ grid-template-columns:1fr; } }
+';
+}
+
+// ---------------------------------------------------------------------------
 // Inline helper: transaction query utilities (formerly a standalone class)
 // ---------------------------------------------------------------------------
 
@@ -125,10 +137,10 @@ class DG_Mpesa_Admin_Panel {
 	// -----------------------------------------------------------------------
 
 	public function load_assets() {
-		wp_enqueue_script( 'dg_mpesa_tailwind',  'https://cdn.tailwindcss.com', [], null, false );
-		wp_enqueue_script( 'dg_mpesa_chartjs',   'https://cdn.jsdelivr.net/npm/chart.js', [], null, false );
+		wp_enqueue_script( 'dg_mpesa_chartjs',   DG_MPESA_PLUGIN_URL . 'assets/js/chart.min.js', [], '4.4.3', true );
 		wp_enqueue_style(  'dg_mpesa_jost',      'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap', [], '1.0' );
 		wp_enqueue_style(  'dg_mpesa_admin_css', DG_MPESA_PLUGIN_URL . 'assets/css/admin-styles.css', [ 'dashicons', 'dg_mpesa_jost' ], DG_MPESA_VERSION );
+		wp_add_inline_style( 'dg_mpesa_admin_css', dg_mpesa_analytics_inline_css() );
 	}
 
 	// -----------------------------------------------------------------------
@@ -173,7 +185,7 @@ class DG_Mpesa_Admin_Panel {
 		$kpi   = $this->queries->summary();
 		$chart = $this->queries->chart_series();
 
-		$page  = max( 1, (int) ( $_GET['paged'] ?? 1 ) );
+		$page  = max( 1, (int) ( isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1 ) );
 		$limit = 20;
 		$rows  = $this->queries->list_rows( $limit, ( $page - 1 ) * $limit );
 		$pages = (int) ceil( $this->queries->row_count() / $limit );
@@ -182,132 +194,132 @@ class DG_Mpesa_Admin_Panel {
 		$revenues = array_column( $chart, 'rev' );
 
 		?>
-		<div class="wrap dg-admin-dashboard" style="font-family:'Jost',sans-serif;">
-			<div class="bg-white rounded-lg shadow-sm p-6 mb-6 mt-4">
+		<div class="wrap dg-admin-dashboard">
+			<div class="dg-analytics-wrap">
+			<div class="dg-analytics-inner">
 
 				<!-- Header -->
-				<div class="flex justify-between items-center mb-6">
-					<div class="flex items-center">
-						<img src="<?php echo esc_url( DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png' ); ?>" alt="M-Pesa" class="h-10 mr-4">
-						<h1 class="text-2xl font-bold text-gray-800 m-0">M-Pesa Analytics Dashboard</h1>
+				<div class="dg-analytics-header">
+					<div style="display:flex;align-items:center;">
+						<img src="<?php echo esc_url( DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png' ); ?>" alt="M-Pesa">
+						<h1><?php esc_html_e( 'M-Pesa Analytics Dashboard', 'dg-checkout-for-m-pesa' ); ?></h1>
 					</div>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dg_mpesa_settings' ) ); ?>"
-					   class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md transition duration-200">
-						Settings Guide
-					</a>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dg_mpesa_settings' ) ); ?>"><?php esc_html_e( 'Settings Guide', 'dg-checkout-for-m-pesa' ); ?></a>
 				</div>
 
 				<!-- KPI Cards -->
-				<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-					<div class="bg-green-50 p-6 rounded-lg border border-green-100">
-						<h3 class="text-green-800 text-sm font-semibold uppercase tracking-wider mb-2">Total Revenue</h3>
-						<div class="text-3xl font-bold text-green-900"><?php echo wc_price( $kpi['revenue'] ); ?></div>
-						<p class="text-green-600 text-sm mt-1">Lifetime M-Pesa Sales</p>
+				<div class="dg-kpi-grid">
+					<div class="dg-kpi-card green">
+						<h3><?php esc_html_e( 'Total Revenue', 'dg-checkout-for-m-pesa' ); ?></h3>
+						<div class="dg-kpi-value"><?php echo wc_price( $kpi['revenue'] ); ?></div>
+						<p class="dg-kpi-label"><?php esc_html_e( 'Lifetime M-Pesa Sales', 'dg-checkout-for-m-pesa' ); ?></p>
 					</div>
-					<div class="bg-blue-50 p-6 rounded-lg border border-blue-100">
-						<h3 class="text-blue-800 text-sm font-semibold uppercase tracking-wider mb-2">Total Transactions</h3>
-						<div class="text-3xl font-bold text-blue-900"><?php echo number_format_i18n( $kpi['total'] ); ?></div>
-						<p class="text-blue-600 text-sm mt-1">Completed &amp; Failed</p>
+					<div class="dg-kpi-card blue">
+						<h3><?php esc_html_e( 'Total Transactions', 'dg-checkout-for-m-pesa' ); ?></h3>
+						<div class="dg-kpi-value"><?php echo number_format_i18n( $kpi['total'] ); ?></div>
+						<p class="dg-kpi-label"><?php esc_html_e( 'Completed & Failed', 'dg-checkout-for-m-pesa' ); ?></p>
 					</div>
-					<div class="bg-purple-50 p-6 rounded-lg border border-purple-100">
-						<h3 class="text-purple-800 text-sm font-semibold uppercase tracking-wider mb-2">Success Rate</h3>
-						<div class="text-3xl font-bold text-purple-900"><?php echo $kpi['rate']; ?>%</div>
-						<p class="text-purple-600 text-sm mt-1">Completion Rate</p>
+					<div class="dg-kpi-card purple">
+						<h3><?php esc_html_e( 'Success Rate', 'dg-checkout-for-m-pesa' ); ?></h3>
+						<div class="dg-kpi-value"><?php echo esc_html( $kpi['rate'] ); ?>%</div>
+						<p class="dg-kpi-label"><?php esc_html_e( 'Completion Rate', 'dg-checkout-for-m-pesa' ); ?></p>
 					</div>
 				</div>
 
 				<!-- Chart -->
-				<div class="bg-white border rounded-lg p-6 mb-8">
-					<h3 class="text-lg font-bold text-gray-800 mb-4">Revenue — Last 30 Days</h3>
+				<div class="dg-chart-box">
+					<h3><?php esc_html_e( 'Revenue — Last 30 Days', 'dg-checkout-for-m-pesa' ); ?></h3>
 					<canvas id="dgMpesaChart" height="100"></canvas>
 				</div>
 
 				<!-- Transactions table -->
-				<div class="bg-white border rounded-lg overflow-hidden">
-					<div class="px-6 py-4 border-b bg-gray-50">
-						<h3 class="text-lg font-bold text-gray-800 m-0">Transaction Log</h3>
+				<div class="dg-table-box">
+					<div class="dg-table-header">
+						<h3><?php esc_html_e( 'Transaction Log', 'dg-checkout-for-m-pesa' ); ?></h3>
 					</div>
-					<div class="overflow-x-auto">
-						<table class="w-full text-left border-collapse">
-							<thead>
+					<table class="dg-tx-table">
+						<thead>
+							<tr>
+								<?php foreach ( [ 'Date', 'Order', 'Phone', 'Amount', 'M-Pesa ID', 'Status' ] as $col ) : ?>
+									<th><?php echo esc_html( $col ); ?></th>
+								<?php endforeach; ?>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if ( ! empty( $rows ) ) : ?>
+								<?php foreach ( $rows as $t ) :
+									if ( 'completed' === $t['status'] ) {
+										$badge = 'dg-status-completed';
+									} elseif ( 'failed' === $t['status'] ) {
+										$badge = 'dg-status-failed';
+									} elseif ( 'pending' === $t['status'] ) {
+										$badge = 'dg-status-pending';
+									} else {
+										$badge = 'dg-status-default';
+									}
+								?>
 								<tr>
-									<?php foreach ( [ 'Date', 'Order', 'Phone', 'Amount', 'M-Pesa ID', 'Status' ] as $col ) : ?>
-										<th class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider"><?php echo esc_html( $col ); ?></th>
-									<?php endforeach; ?>
+									<td><?php echo esc_html( $t['date_created'] ); ?></td>
+									<td><a href="<?php echo esc_url( admin_url( 'post.php?post=' . absint( $t['order_id'] ) . '&action=edit' ) ); ?>">#<?php echo absint( $t['order_id'] ); ?></a></td>
+									<td><?php echo esc_html( $t['phone_number'] ); ?></td>
+									<td><?php echo wc_price( $t['amount'] ); ?></td>
+									<td class="mono"><?php echo esc_html( $t['transaction_id'] ? $t['transaction_id'] : '—' ); ?></td>
+									<td><span class="dg-badge <?php echo esc_attr( $badge ); ?>"><?php echo esc_html( ucfirst( $t['status'] ) ); ?></span></td>
 								</tr>
-							</thead>
-							<tbody class="divide-y divide-gray-200">
-								<?php if ( ! empty( $rows ) ) : ?>
-									<?php foreach ( $rows as $t ) :
-										$colour = match ( $t['status'] ) {
-											'completed' => 'bg-green-100 text-green-800',
-											'failed'    => 'bg-red-100 text-red-800',
-											'pending'   => 'bg-yellow-100 text-yellow-800',
-											default     => 'bg-gray-100 text-gray-800',
-										};
-									?>
-									<tr class="hover:bg-gray-50">
-										<td class="px-6 py-4 text-sm text-gray-600"><?php echo esc_html( $t['date_created'] ); ?></td>
-										<td class="px-6 py-4 text-sm font-medium">
-											<a href="<?php echo esc_url( admin_url( 'post.php?post=' . $t['order_id'] . '&action=edit' ) ); ?>" class="text-blue-600 hover:underline">#<?php echo absint( $t['order_id'] ); ?></a>
-										</td>
-										<td class="px-6 py-4 text-sm text-gray-600"><?php echo esc_html( $t['phone_number'] ); ?></td>
-										<td class="px-6 py-4 text-sm text-gray-600"><?php echo wc_price( $t['amount'] ); ?></td>
-										<td class="px-6 py-4 text-sm text-gray-500 font-mono"><?php echo esc_html( $t['transaction_id'] ?: '—' ); ?></td>
-										<td class="px-6 py-4">
-											<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo esc_attr( $colour ); ?>">
-												<?php echo esc_html( ucfirst( $t['status'] ) ); ?>
-											</span>
-										</td>
-									</tr>
-									<?php endforeach; ?>
-								<?php else : ?>
-									<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No transactions yet.</td></tr>
-								<?php endif; ?>
-							</tbody>
-						</table>
-					</div>
+								<?php endforeach; ?>
+							<?php else : ?>
+								<tr><td colspan="6" class="empty"><?php esc_html_e( 'No transactions yet.', 'dg-checkout-for-m-pesa' ); ?></td></tr>
+							<?php endif; ?>
+						</tbody>
+					</table>
 				</div>
 
 				<!-- Pagination -->
 				<?php if ( $pages > 1 ) : ?>
-				<div class="mt-4 flex justify-center gap-1">
-					<?php for ( $i = 1; $i <= $pages; $i++ ) :
-						$cls = $i === $page
-							? 'bg-blue-50 text-blue-600 border-blue-500'
-							: 'bg-white text-gray-500 hover:bg-gray-50 border-gray-300';
-					?>
+				<div class="dg-pagination">
+					<?php for ( $i = 1; $i <= $pages; $i++ ) : ?>
 					<a href="<?php echo esc_url( add_query_arg( 'paged', $i, admin_url( 'admin.php?page=dg_mpesa_main' ) ) ); ?>"
-					   class="px-4 py-2 border text-sm font-medium <?php echo esc_attr( $cls ); ?>"><?php echo $i; ?></a>
+					   class="<?php echo $i === $page ? 'current' : ''; ?>"><?php echo absint( $i ); ?></a>
 					<?php endfor; ?>
 				</div>
 				<?php endif; ?>
 
-			</div>
+			</div><!-- .dg-analytics-inner -->
+			</div><!-- .dg-analytics-wrap -->
 		</div>
 
 		<script>
 		document.addEventListener('DOMContentLoaded', function () {
-			new Chart(document.getElementById('dgMpesaChart').getContext('2d'), {
+			var ctx = document.getElementById('dgMpesaChart');
+			if ( ! ctx ) { return; }
+			new Chart(ctx.getContext('2d'), {
 				type: 'line',
 				data: {
 					labels: <?php echo wp_json_encode( $dates ); ?>,
 					datasets: [{
 						label: 'Revenue (KES)',
 						data: <?php echo wp_json_encode( $revenues ); ?>,
-						backgroundColor: 'rgba(16,185,129,0.2)',
-						borderColor:     'rgba(16,185,129,1)',
+						backgroundColor: 'rgba(16,185,129,0.15)',
+						borderColor:     '#10b981',
 						borderWidth: 2,
 						tension: 0.3,
-						fill: true
+						fill: true,
+						pointBackgroundColor: '#10b981'
 					}]
 				},
-				options: { responsive: true, scales: { y: { beginAtZero: true } } }
+				options: {
+					responsive: true,
+					plugins: { legend: { display: false } },
+					scales: { y: { beginAtZero: true } }
+				}
 			});
 		});
 		</script>
 		<?php
 	}
+
+
+
 
 	// -----------------------------------------------------------------------
 	// Settings guide

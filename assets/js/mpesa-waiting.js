@@ -39,11 +39,11 @@ jQuery(document).ready(function ($) {
                     // Still pending/on-hold - update status text
                     $('#mpesa-waiting-status-text').text('Current status: ' + response.data.status.replace(/-/g, ' '));
                 } else {
-                    console.log('Error polling status or invalid response:', response);
+                    $('#mpesa-waiting-status-text').text('An unexpected error occurred. Please check your order status.');
                 }
             },
             error: function (xhr, status, error) {
-                console.log('AJAX Error:', error);
+                $('#mpesa-waiting-status-text').text('Connection error. Retrying...');
             }
         });
     }

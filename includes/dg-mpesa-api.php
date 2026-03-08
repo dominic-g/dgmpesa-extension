@@ -90,15 +90,15 @@ class DG_Mpesa_Api_Client {
 	private function normalise_phone( $raw ) {
 		$digits = preg_replace( '/\D/', '', $raw );
 
-		if ( str_starts_with( $digits, '0' ) ) {
+		if ( '0' === substr( $digits, 0, 1 ) ) {
 			return '254' . substr( $digits, 1 );
 		}
 
-		if ( str_starts_with( $digits, '254' ) ) {
+		if ( '254' === substr( $digits, 0, 3 ) ) {
 			return $digits;
 		}
 
-		if ( str_starts_with( $digits, '7' ) ) {
+		if ( '7' === substr( $digits, 0, 1 ) ) {
 			return '254' . $digits;
 		}
 

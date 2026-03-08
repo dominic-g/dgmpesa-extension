@@ -1,6 +1,6 @@
 === DG Lipa na Mpesa Checkout for WooCommerce ===
 Contributors: Dominic_N
-Tags: mpesa, woocommerce, payments, lipa na mpesa, mobile money
+Tags: mpesa, m-pesa, woocommerce mpesa, mpesa paybill, mpesa till number, lipa na mpesa, mpesa payment gateway, safaricom mpesa, kenya payment gateway, woocommerce payment, mobile money, stk push, mpesa woocommerce, daraja, safaricom
 Requires at least: 5.0
 Tested up to: 6.8
 Stable tag: 1.3.2
@@ -10,35 +10,125 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 4.0
 WC tested up to: 8.8
 
-Accept M-Pesa STK Push payments in WooCommerce. A simple and reliable way to integrate Kenya's most popular payment method.
+Accept M-Pesa Paybill and Till Number payments directly in WooCommerce via STK Push — free for life, no hidden fees.
 
 
 == Description ==
 
-Lipa na Mpesa Checkout for WooCommerce provides the most straightforward way to integrate M-Pesa into your online store. This plugin allows your customers to pay using Safaricom's STK Push prompt directly on their phones, creating a smooth and familiar checkout experience.
+**DG Lipa na Mpesa Checkout for WooCommerce** is a 100% free, no-strings-attached payment gateway plugin that lets your customers pay using Safaricom's M-Pesa STK Push prompt. No monthly subscription. No hidden charges. No locked features. Free forever — for every WooCommerce store.
 
-Our plugin is designed for store owners who value simplicity and reliability. With a clean, modern admin interface and a focus on the core payment functionality, getting started is effortless.
+Whether your business uses a **Paybill number** or a **Till Number (Buy Goods)**, this plugin has you covered.
 
-**Why Choose This Plugin?**
+= How It Works =
 
-*   **Seamless Integration:** Adds M-Pesa as a payment option directly into the WooCommerce checkout flow.
-*   **User-Friendly:** Customers are prompted on their phones to complete the payment, a process they already know and trust.
-*   **Modern & Clean:** From the admin panels to the customer-facing waiting page, the interface is designed to be intuitive and professional.
+1. Customer selects M-Pesa at checkout and enters their phone number.
+2. An STK Push notification is sent to their phone instantly.
+3. The customer enters their M-Pesa PIN to complete payment.
+4. Your WooCommerce order is automatically updated in real time.
+
+= Key Features =
+
+* ✅ **Paybill & Till Number support** — works with both M-Pesa Paybill and Buy Goods (Till Number) accounts.
+* ✅ **STK Push** — frictionless payment prompt sent directly to the customer's phone.
+* ✅ **Real-time order updates** — order status changes automatically on payment confirmation via callback.
+* ✅ **Analytics Dashboard** — view revenue totals, transaction counts, success rate, and a 30-day revenue chart right from your WP admin.
+* ✅ **Block Checkout compatible** — works with both the classic WooCommerce checkout and the modern Gutenberg Block Checkout.
+* ✅ **Sandbox & Live modes** — test safely with the Safaricom Sandbox before going live.
+* ✅ **Secure** — all requests use nonce verification, input sanitisation, and HTTPS callbacks.
+* ✅ **Free for life** — no payment required, no upsells that lock core features.
+
+= Who Is This For? =
+
+Any Kenyan WooCommerce store owner who wants to accept M-Pesa payments with zero cost and zero complexity.
+
+= Requirements =
+
+* An active Safaricom Daraja API account (free at [developer.safaricom.co.ke](https://developer.safaricom.co.ke)).
+* A valid SSL certificate on your site (HTTPS required for M-Pesa callbacks).
+* WooCommerce 4.0 or higher.
 
 
 == Installation ==
 
 **Minimum Requirements:**
 
-*   WordPress 5.0 or higher
-*   WooCommerce 4.0 or higher
-*   PHP 7.2 or higher
-*   A valid SSL Certificate (HTTPS)
+* WordPress 5.0 or higher
+* WooCommerce 4.0 or higher
+* PHP 7.2 or higher
+* A valid SSL Certificate (HTTPS)
 
 **Setup Instructions:**
 
-1.  Upload the `dg-checkout-for-m-pesa` folder to your `/wp-content/plugins/` directory.
-2.  Activate the plugin through the 'Plugins' menu in WordPress.
-3.  Navigate to the new **M-Pesa > Settings Guide** page in your admin menu.
-4.  Follow the comprehensive, step-by-step instructions to configure the gateway.
+1. Upload the plugin folder to `/wp-content/plugins/` or install it directly from the WordPress plugin repository.
+2. Activate the plugin via the **Plugins** menu in WordPress.
+3. In your WP Admin, go to **Lipa na Mpesa → Settings Guide**.
+4. Follow the step-by-step guide to enter your Daraja API credentials.
+5. Set your environment to **Sandbox** for testing, then switch to **Live** when ready.
 
+
+== Frequently Asked Questions ==
+
+= Is this plugin really free? =
+
+Yes — completely free. There is no premium version, no licence key, and no features locked behind a paywall. It is free for life for all WooCommerce users.
+
+= Does it support Paybill numbers? =
+
+Yes. Enter your Paybill short code and passkey in the plugin settings and M-Pesa will prompt customers to pay to your Paybill.
+
+= Does it support Till Numbers (Buy Goods)? =
+
+Yes. Enter your Buy Goods Till Number as the short code. Make sure you use the correct passkey associated with that Till from Safaricom Daraja.
+
+= Where do I get API credentials? =
+
+Register for free at [developer.safaricom.co.ke](https://developer.safaricom.co.ke), create an app, and use the Lipa na M-Pesa Online credentials (Consumer Key, Consumer Secret, Short Code, Passkey).
+
+= Does it work with the new WooCommerce Block Checkout? =
+
+Yes. The plugin is fully compatible with both the classic shortcode checkout and the modern Gutenberg Block Checkout introduced in WooCommerce 8+.
+
+= My site uses shared hosting — will it work? =
+
+Yes, as long as your server supports outbound HTTPS requests and you have a valid SSL certificate for M-Pesa to send callbacks.
+
+= What happens if a customer closes the browser before payment? =
+
+Your order stays in **On Hold** status. If the customer completes the STK Push on their phone, the callback from M-Pesa will still arrive and update the order automatically.
+
+= Is it safe? =
+
+Yes. All form submissions use WordPress nonces, all inputs are sanitised, and the M-Pesa callback endpoint validates the incoming payload before processing.
+
+
+== Screenshots ==
+
+1. The M-Pesa payment option shown at checkout.
+2. The payment confirmation waiting screen shown to the customer.
+3. The Analytics Dashboard in WP Admin — revenue KPIs, 30-day chart, and transaction log.
+4. The Settings Guide page with step-by-step configuration instructions.
+
+
+== Changelog ==
+
+= 1.3.2 =
+* Added full WooCommerce Block Checkout compatibility.
+* New Analytics Dashboard with revenue KPIs, 30-day chart, and paginated transaction log.
+* Bundled Chart.js locally (no external CDN dependency).
+* Improved code structure — merged related classes, renamed for clarity.
+* Removed PHP 8.0-only functions; plugin now fully supports PHP 7.2+.
+* Removed @ error suppressor on file_get_contents.
+* Removed console.log statements from production JavaScript.
+* Updated plugin name and removed third-party branding.
+
+= 1.3.1 =
+* Initial public release.
+* M-Pesa STK Push integration for WooCommerce.
+* Sandbox and Live environment support.
+* Real-time order status updates via M-Pesa callback.
+
+
+== Upgrade Notice ==
+
+= 1.3.2 =
+Major update: adds Block Checkout support and a new analytics dashboard. Upgrade recommended for all users.
