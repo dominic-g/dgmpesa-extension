@@ -3,7 +3,7 @@ Contributors: Dominic_N
 Tags: woocommerce mpesa, mpesa paybill, lipa na mpesa, mobile money, stk push
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -102,10 +102,13 @@ Yes. All form submissions use WordPress nonces, all inputs are sanitised, and th
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.3.2 =
 * Initial public release.
 * Added full WooCommerce Block Checkout compatibility.
 * New Analytics Dashboard with revenue KPIs, 30-day chart, and paginated transaction log.
 * M-Pesa STK Push integration for WooCommerce.
 * Sandbox and Live environment support.
 * Real-time order status updates via M-Pesa callback.
+
+== 1.3.3 ==
+* Fixed musmatching textdomainn name to be lipa-na-mpesa-checkout-for-woocommerce.

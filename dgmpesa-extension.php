@@ -1,12 +1,11 @@
 <?php
 /**
  * Plugin Name: Lipa na Mpesa Checkout for WooCommerce
- * Plugin URI:  https://dominicn.dev
  * Description: Accept M-Pesa STK Push payments in WooCommerce. A simple and reliable way to integrate Kenya's most popular payment method.
  * Version:     1.3.2
  * Author:      Dominic_N
  * Author URI:  https://dominicn.dev
- * Text Domain: dgmpesa-extension
+ Text Domain: lipa-na-mpesa-checkout-for-woocommerce
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
