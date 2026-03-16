@@ -378,7 +378,7 @@ class DG_Mpesa_Admin_Panel {
 				<div class="dg-admin-header">
 					<img src="<?php echo esc_url( DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png' ); ?>" alt="M-Pesa Logo" class="dg-header-logo">
 					<h1><?php echo esc_html( $title ); ?></h1>
-					<span class="dg-version-tag"><?php esc_html_e( 'Free Version', 'dg-checkout-for-m-pesa' ); ?></span>
+					<!-- <span class="dg-version-tag"><?php esc_html_e( 'Free Version', 'dg-checkout-for-m-pesa' ); ?></span> -->
 				</div>
 				<div class="dg-admin-content">
 					<?php echo wp_kses_post( $content ); ?>

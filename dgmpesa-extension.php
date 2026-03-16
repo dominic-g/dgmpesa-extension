@@ -46,11 +46,17 @@ add_action( 'plugins_loaded', 'dg_mpesa_boot', 20 );
 
 function dg_mpesa_boot() {
 	if ( ! class_exists( 'WooCommerce' ) ) {
+		// Auto-deactivate if active without WooCommerce
+		if ( ! function_exists( 'deactivate_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+
 		add_action( 'admin_notices', static function () {
 			printf(
 				'<div class="error"><p>%s</p></div>',
 				wp_kses_post( sprintf(
-					__( 'DG Lipa na Mpesa Checkout requires %sWooCommerce%s to be active.', 'dg-checkout-for-m-pesa' ),
+					__( 'DG Lipa na Mpesa Checkout has been deactivated because it requires %sWooCommerce%s to be active.', 'dg-checkout-for-m-pesa' ),
 					'<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">',
 					'</a>'
 				) )
@@ -80,25 +86,35 @@ function dg_mpesa_boot() {
 
 	// Boot callback/webhook listener
 	new DG_Mpesa_Webhook_Handler();
+
+	// ---------------------------------------------------------------------------
+	// Hooks that depend on WooCommerce
+	// ---------------------------------------------------------------------------
+
+	// Block checkout integration
+	add_action( 'woocommerce_blocks_payment_method_type_registration', 'dg_mpesa_init_blocks' );
+
+	// Front-end asset enqueueing
+	add_action( 'wp_enqueue_scripts', 'dg_mpesa_enqueue_frontend' );
+
+	// Template intercept: render waiting screen before theme loads
+	add_action( 'template_redirect', 'dg_mpesa_intercept_template' );
+
+	// AJAX: poll WooCommerce order status (used by the waiting-screen JS)
+	add_action( 'wp_ajax_dg_poll_status',        'dg_mpesa_handle_poll' );
+	add_action( 'wp_ajax_nopriv_dg_poll_status', 'dg_mpesa_handle_poll' );
 }
 
 // ---------------------------------------------------------------------------
-// Block checkout integration
+// Block checkout integration registration (logic moved inside boot)
 // ---------------------------------------------------------------------------
-
-add_action( 'woocommerce_blocks_payment_method_type_registration', 'dg_mpesa_init_blocks' );
 
 function dg_mpesa_init_blocks( \Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $registry ) {
 	require_once DG_MPESA_PLUGIN_PATH . 'includes/blocks/dg-mpesa-blocks.php';
 	$registry->register( new DG_Mpesa_Block_Payment() );
 }
 
-// ---------------------------------------------------------------------------
-// Front-end asset enqueueing
-// ---------------------------------------------------------------------------
-
-add_action( 'wp_enqueue_scripts', 'dg_mpesa_enqueue_frontend' );
-
+// Front-end asset enqueueing logic
 function dg_mpesa_enqueue_frontend() {
 	wp_enqueue_style(
 		'dg_mpesa_jost_font_frontend',
@@ -151,8 +167,6 @@ function dg_mpesa_on_pending_screen() {
 // Template intercept: render waiting screen before theme loads
 // ---------------------------------------------------------------------------
 
-add_action( 'template_redirect', 'dg_mpesa_intercept_template' );
-
 function dg_mpesa_intercept_template() {
 	if ( ! dg_mpesa_on_pending_screen() ) {
 		return;
@@ -178,11 +192,8 @@ function dg_mpesa_intercept_template() {
 }
 
 // ---------------------------------------------------------------------------
-// AJAX: poll WooCommerce order status (used by the waiting-screen JS)
+// AJAX: poll WooCommerce order status registration (logic moved inside boot)
 // ---------------------------------------------------------------------------
-
-add_action( 'wp_ajax_dg_poll_status',        'dg_mpesa_handle_poll' );
-add_action( 'wp_ajax_nopriv_dg_poll_status', 'dg_mpesa_handle_poll' );
 
 function dg_mpesa_handle_poll() {
 	$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';

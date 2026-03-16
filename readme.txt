@@ -1,9 +1,9 @@
 === DG Lipa na Mpesa Checkout for WooCommerce ===
 Contributors: Dominic_N
-Tags: mpesa, m-pesa, woocommerce mpesa, mpesa paybill, mpesa till number, lipa na mpesa, mpesa payment gateway, safaricom mpesa, kenya payment gateway, woocommerce payment, mobile money, stk push, mpesa woocommerce, daraja, safaricom
+Tags: woocommerce mpesa, mpesa paybill, lipa na mpesa, mobile money, stk push
 Requires at least: 5.0
-Tested up to: 6.8
-Stable tag: 1.3.2
+Tested up to: 6.9.1
+Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -100,35 +100,12 @@ Your order stays in **On Hold** status. If the customer completes the STK Push o
 
 Yes. All form submissions use WordPress nonces, all inputs are sanitised, and the M-Pesa callback endpoint validates the incoming payload before processing.
 
-
-== Screenshots ==
-
-1. The M-Pesa payment option shown at checkout.
-2. The payment confirmation waiting screen shown to the customer.
-3. The Analytics Dashboard in WP Admin — revenue KPIs, 30-day chart, and transaction log.
-4. The Settings Guide page with step-by-step configuration instructions.
-
-
 == Changelog ==
 
-= 1.3.2 =
+= 1.0.0 =
+* Initial public release.
 * Added full WooCommerce Block Checkout compatibility.
 * New Analytics Dashboard with revenue KPIs, 30-day chart, and paginated transaction log.
-* Bundled Chart.js locally (no external CDN dependency).
-* Improved code structure — merged related classes, renamed for clarity.
-* Removed PHP 8.0-only functions; plugin now fully supports PHP 7.2+.
-* Removed @ error suppressor on file_get_contents.
-* Removed console.log statements from production JavaScript.
-* Updated plugin name and removed third-party branding.
-
-= 1.3.1 =
-* Initial public release.
 * M-Pesa STK Push integration for WooCommerce.
 * Sandbox and Live environment support.
 * Real-time order status updates via M-Pesa callback.
-
-
-== Upgrade Notice ==
-
-= 1.3.2 =
-Major update: adds Block Checkout support and a new analytics dashboard. Upgrade recommended for all users.

@@ -40,6 +40,19 @@ class DG_Gateway_Installer {
 	 * Run on plugin activation.
 	 */
 	public static function setup() {
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			deactivate_plugins( plugin_basename( DG_MPESA_PLUGIN_FILE ) );
+			wp_die(
+				wp_kses_post( sprintf(
+					__( 'DG Lipa na Mpesa Checkout requires %sWooCommerce%s to be active before it can be activated.', 'dg-checkout-for-m-pesa' ),
+					'<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">',
+					'</a>'
+				) ),
+				__( 'Plugin Activation Error', 'dg-checkout-for-m-pesa' ),
+				[ 'back_link' => true ]
+			);
+		}
+
 		global $wpdb;
 		$table      = $wpdb->prefix . 'dg_mpesa_transactions';
 		$collation  = $wpdb->get_charset_collate();
