@@ -6,7 +6,7 @@
  * Version:     1.3.2
  * Author:      Dominic_N
  * Author URI:  https://dominicn.dev
- * Text Domain: dg-checkout-for-m-pesa
+ * Text Domain: dgmpesa-extension
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -56,7 +56,8 @@ function dg_mpesa_boot() {
 			printf(
 				'<div class="error"><p>%s</p></div>',
 				wp_kses_post( sprintf(
-					__( 'DG Lipa na Mpesa Checkout has been deactivated because it requires %sWooCommerce%s to be active.', 'dg-checkout-for-m-pesa' ),
+					/* translators: 1: opening anchor tag, 2: closing anchor tag */
+					__( 'DG Lipa na Mpesa Checkout has been deactivated because it requires %1$sWooCommerce%2$s to be active.', 'dgmpesa-extension' ),
 					'<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">',
 					'</a>'
 				) )
@@ -70,8 +71,6 @@ function dg_mpesa_boot() {
 	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-gateway.php'; // DG_Mpesa_Payment_Gateway
 	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-webhook.php'; // DG_Mpesa_Webhook_Handler
 	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-admin.php';   // DG_Mpesa_Admin_Panel, DG_Mpesa_Tx_Queries
-
-	load_plugin_textdomain( 'dg-checkout-for-m-pesa', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 	// Register the payment gateway with WooCommerce
 	add_filter( 'woocommerce_payment_gateways', static function ( $gateways ) {
@@ -133,7 +132,8 @@ function dg_mpesa_enqueue_frontend() {
 	}
 
 	if ( dg_mpesa_on_pending_screen() ) {
-		$order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0;
+		$get_order_id = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_NUMBER_INT );
+		$order_id     = $get_order_id ? absint( $get_order_id ) : 0;
 
 		wp_enqueue_script(
 			'dg_mpesa_waiting_script',
@@ -172,8 +172,8 @@ function dg_mpesa_intercept_template() {
 		return;
 	}
 
-	$order_id = absint( $_GET['order_id'] );
-	$order    = wc_get_order( $order_id );
+	$order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0;
+	$order    = $order_id ? wc_get_order( $order_id ) : null;
 
 	// Authorisation check
 	$key           = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : '';
@@ -182,7 +182,7 @@ function dg_mpesa_intercept_template() {
 	$valid_guest   = ! is_user_logged_in() && $order &&
 	                 method_exists( $order, 'key_is_valid' ) && $order->key_is_valid( $key );
 
-	if ( ! $order || ( ! $valid_user && ! $valid_guest ) ) {
+	if ( ! $order || ( ! $valid_user && ! $valid_guest ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ?? '' ) ), 'dg_waiting' ) ) {
 		wp_safe_redirect( home_url( '/' ) );
 		exit;
 	}
@@ -234,40 +234,51 @@ function dg_mpesa_render_pending_page( $order_id ) {
 	$order = wc_get_order( $order_id );
 
 	if ( ! $order ) {
-		wp_die( esc_html__( 'Invalid order specified.', 'dg-checkout-for-m-pesa' ) );
+		wp_die( esc_html__( 'Invalid order specified.', 'dgmpesa-extension' ) );
 	}
 
 	$logo_url  = DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png';
-	$font_url  = 'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap';
-	$style_url = DG_MPESA_PLUGIN_URL . 'assets/css/mpesa-frontend-styles.css';
+
+	// Enqueue styles properly for wp_head() to pick up
+	wp_enqueue_style(
+		'dg-mpesa-jost',
+		'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap',
+		[],
+		'1.0'
+	);
+	wp_enqueue_style(
+		'dg-mpesa-waiting',
+		DG_MPESA_PLUGIN_URL . 'assets/css/mpesa-frontend-styles.css',
+		[ 'dg-mpesa-jost' ],
+		DG_MPESA_VERSION
+	);
+
 	?>
 	<!DOCTYPE html>
 	<html <?php language_attributes(); ?>>
 	<head>
 		<meta charset="<?php bloginfo( 'charset' ); ?>" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="<?php echo esc_url( $font_url ); ?>" type="text/css">
-		<link rel="stylesheet" href="<?php echo esc_url( $style_url ); ?>" type="text/css" media="all">
 		<?php wp_head(); ?>
-		<title><?php esc_html_e( 'Awaiting M-Pesa Payment', 'dg-checkout-for-m-pesa' ); ?></title>
+		<title><?php esc_html_e( 'Awaiting M-Pesa Payment', 'dgmpesa-extension' ); ?></title>
 	</head>
 	<body <?php body_class( 'mpesa-waiting-body' ); ?>>
 		<div id="mpesa-waiting-container-main" class="mpesa-waiting-container">
-			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php esc_attr_e( 'M-Pesa Logo', 'dg-checkout-for-m-pesa' ); ?>" class="mpesa-waiting-logo">
+			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php esc_attr_e( 'M-Pesa Logo', 'dgmpesa-extension' ); ?>" class="mpesa-waiting-logo">
 
 			<div class="mpesa-waiting-spinner">
 				<svg viewBox="25 25 50 50"><circle cx="50" cy="50" r="20"></circle></svg>
 			</div>
 
-			<h2 id="mpesa-waiting-title"><?php esc_html_e( 'Please Confirm Payment on Your Phone', 'dg-checkout-for-m-pesa' ); ?></h2>
+			<h2 id="mpesa-waiting-title"><?php esc_html_e( 'Please Confirm Payment on Your Phone', 'dgmpesa-extension' ); ?></h2>
 			<p class="mpesa-instruction" id="mpesa-waiting-instruction">
-				<?php esc_html_e( 'An M-Pesa payment request has been sent. Enter your M-Pesa PIN to authorise.', 'dg-checkout-for-m-pesa' ); ?>
+				<?php esc_html_e( 'An M-Pesa payment request has been sent. Enter your M-Pesa PIN to authorise.', 'dgmpesa-extension' ); ?>
 			</p>
 
 			<div class="mpesa-waiting-info">
-				<p><strong><?php esc_html_e( 'Order Number:', 'dg-checkout-for-m-pesa' ); ?></strong> #<?php echo esc_html( $order->get_order_number() ); ?></p>
-				<p><strong><?php esc_html_e( 'Amount:', 'dg-checkout-for-m-pesa' ); ?></strong> <?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></p>
-				<p><small><em id="mpesa-waiting-status-text"><?php esc_html_e( 'Waiting for M-Pesa confirmation…', 'dg-checkout-for-m-pesa' ); ?></em></small></p>
+				<p><strong><?php esc_html_e( 'Order Number:', 'dgmpesa-extension' ); ?></strong> #<?php echo esc_html( $order->get_order_number() ); ?></p>
+				<p><strong><?php esc_html_e( 'Amount:', 'dgmpesa-extension' ); ?></strong> <?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></p>
+				<p><small><em id="mpesa-waiting-status-text"><?php esc_html_e( 'Waiting for M-Pesa confirmation…', 'dgmpesa-extension' ); ?></em></small></p>
 			</div>
 		</div>
 		<?php wp_footer(); ?>

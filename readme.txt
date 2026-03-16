@@ -1,9 +1,9 @@
-=== DG Lipa na Mpesa Checkout for WooCommerce ===
+=== Lipa na Mpesa Checkout for WooCommerce ===
 Contributors: Dominic_N
 Tags: woocommerce mpesa, mpesa paybill, lipa na mpesa, mobile money, stk push
 Requires at least: 5.0
-Tested up to: 6.9.1
-Stable tag: 1.0.0
+Tested up to: 6.9
+Stable tag: 1.3.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

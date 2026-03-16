@@ -44,11 +44,12 @@ class DG_Gateway_Installer {
 			deactivate_plugins( plugin_basename( DG_MPESA_PLUGIN_FILE ) );
 			wp_die(
 				wp_kses_post( sprintf(
-					__( 'DG Lipa na Mpesa Checkout requires %sWooCommerce%s to be active before it can be activated.', 'dg-checkout-for-m-pesa' ),
+					/* translators: 1: opening anchor tag, 2: closing anchor tag */
+					__( 'DG Lipa na Mpesa Checkout requires %1$sWooCommerce%2$s to be active before it can be activated.', 'dgmpesa-extension' ),
 					'<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">',
 					'</a>'
 				) ),
-				__( 'Plugin Activation Error', 'dg-checkout-for-m-pesa' ),
+				esc_html__( 'Plugin Activation Error', 'dgmpesa-extension' ),
 				[ 'back_link' => true ]
 			);
 		}

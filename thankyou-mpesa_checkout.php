@@ -18,17 +18,17 @@ if ( 'dg_mpesa_checkout' === $payment_method ) : ?>
 	<div class="woocommerce-order">
 		<?php if ( $order->has_status( 'pending' ) ) : ?>
 			<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received">
-				<?php esc_html_e( 'Thank you for your order.', 'dg-checkout-for-m-pesa' ); ?>
+				<?php esc_html_e( 'Thank you for your order.', 'dgmpesa-extension' ); ?>
 			</p>
 			<p>
-				<?php esc_html_e( 'Your payment is pending. Please complete the payment using the M-Pesa prompt sent to your phone.', 'dg-checkout-for-m-pesa' ); ?>
+				<?php esc_html_e( 'Your payment is pending. Please complete the payment using the M-Pesa prompt sent to your phone.', 'dgmpesa-extension' ); ?>
 			</p>
 			<p>
-				<?php esc_html_e( 'Once the payment is confirmed, your order status will be updated accordingly.', 'dg-checkout-for-m-pesa' ); ?>
+				<?php esc_html_e( 'Once the payment is confirmed, your order status will be updated accordingly.', 'dgmpesa-extension' ); ?>
 			</p>
 		<?php elseif ( $order->has_status( 'processing' ) || $order->has_status( 'completed' ) ) : ?>
 			<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received">
-				<?php esc_html_e( 'Thank you. Your payment has been received.', 'dg-checkout-for-m-pesa' ); ?>
+				<?php esc_html_e( 'Thank you. Your payment has been received.', 'dgmpesa-extension' ); ?>
 			</p>
 		<?php endif; ?>
 

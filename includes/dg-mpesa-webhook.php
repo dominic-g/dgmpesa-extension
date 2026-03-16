@@ -82,7 +82,8 @@ class DG_Mpesa_Webhook_Handler {
 
 		if ( $amount_paid < $order->get_total() ) {
 			$note = sprintf(
-				__( 'Partial M-Pesa payment — paid: %s, expected: %s. Tx: %s', 'dg-checkout-for-m-pesa' ),
+				/* translators: 1: amount paid, 2: expected total, 3: transaction receipt number */
+				__( 'Partial M-Pesa payment — paid: %1$s, expected: %2$s. Tx: %3$s', 'dgmpesa-extension' ),
 				$amount_paid, $order->get_total(), $receipt
 			);
 			$order->update_status( 'on-hold', $note );
@@ -91,7 +92,11 @@ class DG_Mpesa_Webhook_Handler {
 		}
 
 		$order->payment_complete( $receipt );
-		$order->add_order_note( sprintf( __( 'M-Pesa payment received. Tx ID: %s', 'dg-checkout-for-m-pesa' ), $receipt ) );
+		$order->add_order_note( sprintf(
+			/* translators: %s: transaction receipt number */
+			__( 'M-Pesa payment received. Tx ID: %s', 'dgmpesa-extension' ),
+			$receipt
+		) );
 		$this->finalise_log( $order->get_id(), $receipt, 'completed' );
 		$this->log->write( "Order #{$order->get_id()} complete — Tx: {$receipt}" );
 	}
@@ -103,9 +108,14 @@ class DG_Mpesa_Webhook_Handler {
 
 		$order->update_status(
 			'failed',
-			sprintf( __( 'M-Pesa payment failed: %s', 'dg-checkout-for-m-pesa' ), $reason )
+			/* translators: %s: failure reason from M-Pesa */
+			sprintf( __( 'M-Pesa payment failed: %s', 'dgmpesa-extension' ), $reason )
 		);
-		$order->add_order_note( sprintf( __( 'M-Pesa failed — code: %s, reason: %s', 'dg-checkout-for-m-pesa' ), $stk['ResultCode'], $reason ) );
+		$order->add_order_note( sprintf(
+			/* translators: 1: M-Pesa result code, 2: failure reason */
+			__( 'M-Pesa failed — code: %1$s, reason: %2$s', 'dgmpesa-extension' ),
+			$stk['ResultCode'], $reason
+		) );
 		$this->finalise_log( $order->get_id(), '', 'failed' );
 		$this->log->write( "Order #{$order->get_id()} failed — {$reason}", 'error' );
 	}
@@ -116,6 +126,7 @@ class DG_Mpesa_Webhook_Handler {
 
 	private function find_order( $checkout_request_id ) {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		return absint( $wpdb->get_var( $wpdb->prepare(
 			"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_dg_mpesa_checkout_request_id' AND meta_value = %s",
 			$checkout_request_id
@@ -124,6 +135,7 @@ class DG_Mpesa_Webhook_Handler {
 
 	private function finalise_log( $order_id, $tx_id, $status ) {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$updated = $wpdb->update(
 			$wpdb->prefix . 'dg_mpesa_transactions',
 			[ 'transaction_id' => $tx_id, 'status' => $status ],

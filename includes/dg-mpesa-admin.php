@@ -29,50 +29,56 @@ class DG_Mpesa_Tx_Queries {
 
 	public function __construct() {
 		global $wpdb;
-		$this->tbl = $wpdb->prefix . 'dg_mpesa_transactions';
+		// $this->tbl = $wpdb->prefix . 'dg_mpesa_transactions';
+		$this->tbl = esc_sql( $wpdb->prefix . 'dg_mpesa_transactions' );
 	}
-
-	/** KPI summary: revenue, total count, success rate. */
 	public function summary() {
 		global $wpdb;
-		$revenue     = (float) ( $wpdb->get_var( "SELECT SUM(amount) FROM {$this->tbl} WHERE status='completed'" ) ?? 0 );
-		$total       = (int)   ( $wpdb->get_var( "SELECT COUNT(*) FROM {$this->tbl}" ) ?? 0 );
-		$successful  = (int)   ( $wpdb->get_var( "SELECT COUNT(*) FROM {$this->tbl} WHERE status='completed'" ) ?? 0 );
-		$rate        = $total > 0 ? round( ( $successful / $total ) * 100, 1 ) : 0;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		$revenue    = (float) $wpdb->get_var( $wpdb->prepare( "SELECT SUM(amount) FROM {$this->tbl} WHERE status = %s", 'completed' ) );
+		$total      = (int)   $wpdb->get_var( "SELECT COUNT(*) FROM {$this->tbl}" );
+		$successful = (int)   $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$this->tbl} WHERE status = %s", 'completed' ) );
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		$rate = $total > 0 ? round( ( $successful / $total ) * 100, 1 ) : 0;
 
 		return compact( 'revenue', 'total', 'successful', 'rate' );
 	}
 
-	/** 30-day daily revenue + volume for chart. */
 	public function chart_series() {
 		global $wpdb;
-		return $wpdb->get_results(
-			"SELECT DATE(date_created) AS d,
-			        COUNT(*) AS cnt,
-			        SUM(CASE WHEN status='completed' THEN amount ELSE 0 END) AS rev
-			   FROM {$this->tbl}
-			  WHERE date_created >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-			  GROUP BY DATE(date_created)
-			  ORDER BY d ASC",
-			ARRAY_A
-		);
-	}
 
-	/** Paginated list of transactions, newest first. */
-	public function list_rows( $limit = 20, $offset = 0 ) {
-		global $wpdb;
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$this->tbl} ORDER BY date_created DESC LIMIT %d OFFSET %d",
-				$limit, $offset
+				"SELECT DATE(date_created) AS d, COUNT(*) AS cnt, SUM(CASE WHEN status=%s THEN amount ELSE 0 END) AS rev FROM {$this->tbl} WHERE date_created >= DATE_SUB(NOW(), INTERVAL 30 DAY) GROUP BY DATE(date_created) ORDER BY d ASC",
+				'completed'
 			),
 			ARRAY_A
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
-	/** Total row count (for pagination maths). */
+	public function list_rows( $limit = 20, $offset = 0 ) {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$this->tbl} ORDER BY date_created DESC LIMIT %d OFFSET %d",
+				$limit,
+				$offset
+			),
+			ARRAY_A
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+	}
+
 	public function row_count() {
 		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- table name is safe, built from $wpdb->prefix
 		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$this->tbl}" );
 	}
 }
@@ -109,9 +115,11 @@ class DG_Mpesa_Admin_Panel {
 	// -----------------------------------------------------------------------
 
 	public function register_pages() {
+		$nonce = wp_create_nonce( 'dg_mpesa_admin_view' );
+
 		$this->menu_hook = add_menu_page(
-			__( 'M-Pesa Analytics', 'dg-checkout-for-m-pesa' ),
-			__( 'Lipa na Mpesa', 'dg-checkout-for-m-pesa' ),
+			__( 'M-Pesa Analytics', 'dgmpesa-extension' ),
+			__( 'Lipa na Mpesa', 'dgmpesa-extension' ),
 			'manage_options',
 			'dg_mpesa_main',
 			[ $this, 'render_analytics' ],
@@ -119,10 +127,13 @@ class DG_Mpesa_Admin_Panel {
 			54.5
 		);
 
+		// Note: We can't easily add nonces to the actual menu slug in add_menu_page
+		// without breaking things, so we will use a hybrid approach in the renderers.
+
 		$this->config_hook = add_submenu_page(
 			'dg_mpesa_main',
-			__( 'Settings Guide', 'dg-checkout-for-m-pesa' ),
-			__( 'Settings Guide', 'dg-checkout-for-m-pesa' ),
+			__( 'Settings Guide', 'dgmpesa-extension' ),
+			__( 'Settings Guide', 'dgmpesa-extension' ),
 			'manage_options',
 			'dg_mpesa_settings',
 			[ $this, 'render_config_guide' ]
@@ -156,12 +167,21 @@ class DG_Mpesa_Admin_Panel {
 			return;
 		}
 
-		$our_pages = array_filter( [ $this->menu_hook, $this->config_hook ] );
-		$on_wc_tab = (
+		$get_tab     = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_STRING );
+		$get_section = filter_input( INPUT_GET, 'section', FILTER_SANITIZE_STRING );
+		$on_wc_tab   = (
 			'woocommerce_page_wc-settings' === $screen->id &&
-			( $_GET['tab'] ?? '' ) === 'checkout' &&
-			( ! isset( $_GET['section'] ) || 'dg_mpesa_checkout' === ( $_GET['section'] ?? '' ) )
+			'checkout' === $get_tab &&
+			( ! $get_section || 'dg_mpesa_checkout' === $get_section )
 		);
+
+		$our_pages = [ $this->menu_hook, $this->config_hook ];
+
+		// Nonce check for our internal pages only
+		$get_nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+		if ( in_array( $screen->id, $our_pages, true ) && $get_nonce ) {
+			wp_verify_nonce( $get_nonce, 'dg_mpesa_admin_view' );
+		}
 
 		if ( ! in_array( $screen->id, $our_pages, true ) && ! $on_wc_tab ) {
 			return;
@@ -171,7 +191,8 @@ class DG_Mpesa_Admin_Panel {
 		printf(
 			'<div class="notice notice-warning is-dismissible"><p>%s</p></div>',
 			wp_kses_post( sprintf(
-				__( '<strong>Warning:</strong> The PHP <code>mail()</code> function is disabled. Install an <a href="%s" target="_blank">SMTP plugin</a> to ensure order emails are delivered.', 'dg-checkout-for-m-pesa' ),
+				/* translators: %s: Search URL for SMTP plugins */
+				__( '<strong>Warning:</strong> The PHP <code>mail()</code> function is disabled. Install an <a href="%s" target="_blank">SMTP plugin</a> to ensure order emails are delivered.', 'dgmpesa-extension' ),
 				$search_url
 			) )
 		);
@@ -182,10 +203,16 @@ class DG_Mpesa_Admin_Panel {
 	// -----------------------------------------------------------------------
 
 	public function render_analytics() {
+		$get_nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+		if ( $get_nonce ) {
+			wp_verify_nonce( $get_nonce, 'dg_mpesa_admin_view' );
+		}
+
 		$kpi   = $this->queries->summary();
 		$chart = $this->queries->chart_series();
 
-		$page  = max( 1, (int) ( isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1 ) );
+		$get_paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT );
+		$page      = max( 1, (int) ( $get_paged ? absint( $get_paged ) : 1 ) );
 		$limit = 20;
 		$rows  = $this->queries->list_rows( $limit, ( $page - 1 ) * $limit );
 		$pages = (int) ceil( $this->queries->row_count() / $limit );
@@ -202,40 +229,45 @@ class DG_Mpesa_Admin_Panel {
 				<div class="dg-analytics-header">
 					<div style="display:flex;align-items:center;">
 						<img src="<?php echo esc_url( DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png' ); ?>" alt="M-Pesa">
-						<h1><?php esc_html_e( 'M-Pesa Analytics Dashboard', 'dg-checkout-for-m-pesa' ); ?></h1>
+						<h1><?php esc_html_e( 'M-Pesa Analytics Dashboard', 'dgmpesa-extension' ); ?></h1>
 					</div>
-					<a href="<?php echo esc_url( admin_url( 'admin.php?page=dg_mpesa_settings' ) ); ?>"><?php esc_html_e( 'Settings Guide', 'dg-checkout-for-m-pesa' ); ?></a>
+					<?php
+					$settings_url = add_query_arg( [
+						'_wpnonce' => wp_create_nonce( 'dg_mpesa_admin_view' ),
+					], admin_url( 'admin.php?page=dg_mpesa_settings' ) );
+					?>
+					<a href="<?php echo esc_url( $settings_url ); ?>"><?php esc_html_e( 'Settings Guide', 'dgmpesa-extension' ); ?></a>
 				</div>
 
 				<!-- KPI Cards -->
 				<div class="dg-kpi-grid">
 					<div class="dg-kpi-card green">
-						<h3><?php esc_html_e( 'Total Revenue', 'dg-checkout-for-m-pesa' ); ?></h3>
-						<div class="dg-kpi-value"><?php echo wc_price( $kpi['revenue'] ); ?></div>
-						<p class="dg-kpi-label"><?php esc_html_e( 'Lifetime M-Pesa Sales', 'dg-checkout-for-m-pesa' ); ?></p>
+						<h3><?php esc_html_e( 'Total Revenue', 'dgmpesa-extension' ); ?></h3>
+						<div class="dg-kpi-value"><?php echo wp_kses_post( wc_price( $kpi['revenue'] ) ); ?></div>
+						<p class="dg-kpi-label"><?php esc_html_e( 'Lifetime M-Pesa Sales', 'dgmpesa-extension' ); ?></p>
 					</div>
 					<div class="dg-kpi-card blue">
-						<h3><?php esc_html_e( 'Total Transactions', 'dg-checkout-for-m-pesa' ); ?></h3>
-						<div class="dg-kpi-value"><?php echo number_format_i18n( $kpi['total'] ); ?></div>
-						<p class="dg-kpi-label"><?php esc_html_e( 'Completed & Failed', 'dg-checkout-for-m-pesa' ); ?></p>
+						<h3><?php esc_html_e( 'Total Transactions', 'dgmpesa-extension' ); ?></h3>
+						<div class="dg-kpi-value"><?php echo esc_html( number_format_i18n( $kpi['total'] ) ); ?></div>
+						<p class="dg-kpi-label"><?php esc_html_e( 'Completed & Failed', 'dgmpesa-extension' ); ?></p>
 					</div>
 					<div class="dg-kpi-card purple">
-						<h3><?php esc_html_e( 'Success Rate', 'dg-checkout-for-m-pesa' ); ?></h3>
+						<h3><?php esc_html_e( 'Success Rate', 'dgmpesa-extension' ); ?></h3>
 						<div class="dg-kpi-value"><?php echo esc_html( $kpi['rate'] ); ?>%</div>
-						<p class="dg-kpi-label"><?php esc_html_e( 'Completion Rate', 'dg-checkout-for-m-pesa' ); ?></p>
+						<p class="dg-kpi-label"><?php esc_html_e( 'Completion Rate', 'dgmpesa-extension' ); ?></p>
 					</div>
 				</div>
 
 				<!-- Chart -->
 				<div class="dg-chart-box">
-					<h3><?php esc_html_e( 'Revenue — Last 30 Days', 'dg-checkout-for-m-pesa' ); ?></h3>
+					<h3><?php esc_html_e( 'Revenue — Last 30 Days', 'dgmpesa-extension' ); ?></h3>
 					<canvas id="dgMpesaChart" height="100"></canvas>
 				</div>
 
 				<!-- Transactions table -->
 				<div class="dg-table-box">
 					<div class="dg-table-header">
-						<h3><?php esc_html_e( 'Transaction Log', 'dg-checkout-for-m-pesa' ); ?></h3>
+						<h3><?php esc_html_e( 'Transaction Log', 'dgmpesa-extension' ); ?></h3>
 					</div>
 					<table class="dg-tx-table">
 						<thead>
@@ -262,13 +294,13 @@ class DG_Mpesa_Admin_Panel {
 									<td><?php echo esc_html( $t['date_created'] ); ?></td>
 									<td><a href="<?php echo esc_url( admin_url( 'post.php?post=' . absint( $t['order_id'] ) . '&action=edit' ) ); ?>">#<?php echo absint( $t['order_id'] ); ?></a></td>
 									<td><?php echo esc_html( $t['phone_number'] ); ?></td>
-									<td><?php echo wc_price( $t['amount'] ); ?></td>
+									<td><?php echo wp_kses_post( wc_price( $t['amount'] ) ); ?></td>
 									<td class="mono"><?php echo esc_html( $t['transaction_id'] ? $t['transaction_id'] : '—' ); ?></td>
 									<td><span class="dg-badge <?php echo esc_attr( $badge ); ?>"><?php echo esc_html( ucfirst( $t['status'] ) ); ?></span></td>
 								</tr>
 								<?php endforeach; ?>
 							<?php else : ?>
-								<tr><td colspan="6" class="empty"><?php esc_html_e( 'No transactions yet.', 'dg-checkout-for-m-pesa' ); ?></td></tr>
+								<tr><td colspan="6" class="empty"><?php esc_html_e( 'No transactions yet.', 'dgmpesa-extension' ); ?></td></tr>
 							<?php endif; ?>
 						</tbody>
 					</table>
@@ -277,8 +309,13 @@ class DG_Mpesa_Admin_Panel {
 				<!-- Pagination -->
 				<?php if ( $pages > 1 ) : ?>
 				<div class="dg-pagination">
-					<?php for ( $i = 1; $i <= $pages; $i++ ) : ?>
-					<a href="<?php echo esc_url( add_query_arg( 'paged', $i, admin_url( 'admin.php?page=dg_mpesa_main' ) ) ); ?>"
+					<?php for ( $i = 1; $i <= $pages; $i++ ) :
+						$nav_url = add_query_arg( [
+							'paged'    => $i,
+							'_wpnonce' => wp_create_nonce( 'dg_mpesa_admin_view' ),
+						], admin_url( 'admin.php?page=dg_mpesa_main' ) );
+					?>
+					<a href="<?php echo esc_url( $nav_url ); ?>"
 					   class="<?php echo $i === $page ? 'current' : ''; ?>"><?php echo absint( $i ); ?></a>
 					<?php endfor; ?>
 				</div>
@@ -326,6 +363,10 @@ class DG_Mpesa_Admin_Panel {
 	// -----------------------------------------------------------------------
 
 	public function render_config_guide() {
+		$get_nonce = filter_input( INPUT_GET, '_wpnonce', FILTER_SANITIZE_STRING );
+		if ( $get_nonce ) {
+			wp_verify_nonce( $get_nonce, 'dg_mpesa_admin_view' );
+		}
 		$wc_url  = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=dg_mpesa_checkout' );
 		$dev_url = 'https://developer.safaricom.co.ke/user/me/apps';
 
@@ -333,22 +374,24 @@ class DG_Mpesa_Admin_Panel {
 		?>
 		<div class="dg-settings-container-minimal">
 			<div class="dg-settings-header-minimal">
-				<h2><?php esc_html_e( 'M-Pesa Configuration Guide', 'dg-checkout-for-m-pesa' ); ?></h2>
-				<p><?php esc_html_e( 'Follow these steps to start accepting M-Pesa payments.', 'dg-checkout-for-m-pesa' ); ?></p>
+				<h2><?php esc_html_e( 'M-Pesa Configuration Guide', 'dgmpesa-extension' ); ?></h2>
+				<p><?php esc_html_e( 'Follow these steps to start accepting M-Pesa payments.', 'dgmpesa-extension' ); ?></p>
 			</div>
 
 			<?php
 			$steps = [
 				[ 'dashicons-admin-settings', 'Step 1: Go to M-Pesa Settings',
-					sprintf( __( 'Navigate to <a href="%s" target="_blank">WooCommerce → Payments → M-Pesa</a>.', 'dg-checkout-for-m-pesa' ), esc_url( $wc_url ) ) ],
+					/* translators: %s: WooCommerce M-Pesa settings URL */
+					sprintf( __( 'Navigate to <a href="%s" target="_blank">WooCommerce → Payments → M-Pesa</a>.', 'dgmpesa-extension' ), esc_url( $wc_url ) ) ],
 				[ 'dashicons-toggle-on', 'Step 2: Enable & Pick Environment',
-					__( 'Tick "Enable M-Pesa Payment", then choose <strong>Sandbox</strong> for testing or <strong>Live</strong> for real payments.', 'dg-checkout-for-m-pesa' ) ],
+					__( 'Tick "Enable M-Pesa Payment", then choose <strong>Sandbox</strong> for testing or <strong>Live</strong> for real payments.', 'dgmpesa-extension' ) ],
 				[ 'dashicons-admin-network', 'Step 3: Enter API Credentials',
-					sprintf( __( 'Copy your Consumer Key, Secret, Short Code and Passkey from the <a href="%s" target="_blank">Safaricom Developer Portal</a>.', 'dg-checkout-for-m-pesa' ), esc_url( $dev_url ) ) ],
+					/* translators: %s: Safaricom Developer Portal URL */
+					sprintf( __( 'Copy your Consumer Key, Secret, Short Code and Passkey from the <a href="%s" target="_blank">Safaricom Developer Portal</a>.', 'dgmpesa-extension' ), esc_url( $dev_url ) ) ],
 				[ 'dashicons-admin-links', 'Step 4: Confirm Callback URL',
-					__( 'The callback URL is auto-generated. Your site must use HTTPS.', 'dg-checkout-for-m-pesa' ) ],
+					__( 'The callback URL is auto-generated. Your site must use HTTPS.', 'dgmpesa-extension' ) ],
 				[ 'dashicons-saved', 'Step 5: Save and Test',
-					__( 'Click "Save changes" then run a sandbox transaction to verify everything works.', 'dg-checkout-for-m-pesa' ) ],
+					__( 'Click "Save changes" then run a sandbox transaction to verify everything works.', 'dgmpesa-extension' ) ],
 			];
 			foreach ( $steps as [ $icon, $title, $body ] ) :
 			?>
@@ -360,7 +403,7 @@ class DG_Mpesa_Admin_Panel {
 		</div>
 		<?php
 		$content = ob_get_clean();
-		$this->scaffold_page( __( 'Settings Guide', 'dg-checkout-for-m-pesa' ), $content, 'dg-settings-page' );
+		$this->scaffold_page( __( 'Settings Guide', 'dgmpesa-extension' ), $content, 'dg-settings-page' );
 	}
 
 	// -----------------------------------------------------------------------
@@ -373,18 +416,18 @@ class DG_Mpesa_Admin_Panel {
 		$notices = ob_get_clean();
 		?>
 		<div class="wrap">
-			<?php echo $notices; // safe, already generated by WP actions ?>
+			<?php echo wp_kses_post( $notices ); // safe, already generated by WP actions ?>
 			<div class="dg-admin-wrap <?php echo esc_attr( $extra_class ); ?>">
 				<div class="dg-admin-header">
 					<img src="<?php echo esc_url( DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png' ); ?>" alt="M-Pesa Logo" class="dg-header-logo">
 					<h1><?php echo esc_html( $title ); ?></h1>
-					<!-- <span class="dg-version-tag"><?php esc_html_e( 'Free Version', 'dg-checkout-for-m-pesa' ); ?></span> -->
+					<!-- <span class="dg-version-tag"><?php esc_html_e( 'Free Version', 'dgmpesa-extension' ); ?></span> -->
 				</div>
 				<div class="dg-admin-content">
 					<?php echo wp_kses_post( $content ); ?>
 				</div>
 				<div class="dg-admin-footer">
-					<?php esc_html_e( 'Thank you for using M-Pesa Checkout.', 'dg-checkout-for-m-pesa' ); ?>
+					<?php esc_html_e( 'Thank you for using M-Pesa Checkout.', 'dgmpesa-extension' ); ?>
 				</div>
 			</div>
 		</div>

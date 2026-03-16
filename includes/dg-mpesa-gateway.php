@@ -145,20 +145,21 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 		?>
 		<div class="dg-mpesa-checkout-wrapper" style="font-family:'Jost',sans-serif;font-size:16px;">
 			<div class="dg-mpesa-checkout-description" style="margin-bottom:1rem;">
-				<?php esc_html_e( 'Enter your M-Pesa phone number to receive an STK push prompt.', 'dg-checkout-for-m-pesa' ); ?>
+				<?php esc_html_e( 'Enter your M-Pesa phone number to receive an STK push prompt.', 'dgmpesa-extension' ); ?>
 			</div>
 
 			<?php wp_nonce_field( 'mpesa_checkout_action', 'mpesa_checkout_nonce_field' ); ?>
 
 			<div class="dg-mpesa-checkout-field" style="margin-bottom:1rem;">
 				<label for="mpesa_phone_number">
-					<?php esc_html_e( 'Phone Number', 'dg-checkout-for-m-pesa' ); ?> <span class="required">*</span>
+					<?php esc_html_e( 'Phone Number', 'dgmpesa-extension' ); ?> <span class="required">*</span>
 				</label>
 				<input
 					type="text"
 					name="mpesa_phone_number"
 					id="mpesa_phone_number"
-					placeholder="<?php esc_attr_e( '07XXXXXXXX', 'dg-checkout-for-m-pesa' ); ?>"
+					/* translators: placeholder Example phone number */
+					placeholder="<?php esc_attr_e( '07XXXXXXXX', 'dgmpesa-extension' ); ?>"
 					required
 					style="padding:0.6rem;width:100%;"
 				>
@@ -178,7 +179,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 			: '';
 
 		if ( ! wp_verify_nonce( $nonce, 'mpesa_checkout_action' ) ) {
-			wc_add_notice( esc_html__( 'Security check failed, please try again.', 'dg-checkout-for-m-pesa' ), 'error' );
+			wc_add_notice( esc_html__( 'Security check failed, please try again.', 'dgmpesa-extension' ), 'error' );
 			return [ 'result' => 'failure', 'redirect' => '' ];
 		}
 
@@ -195,8 +196,9 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 		$result = $this->api_client->push_stk( $phone_number, $amount, $order_id );
 
 		if ( false === $result ) {
-			$err = $this->api_client->last_error() ?: esc_html__( 'M-Pesa STK push failed. Please try again.', 'dg-checkout-for-m-pesa' );
-			wc_add_notice( esc_html__( 'M-Pesa error: ', 'dg-checkout-for-m-pesa' ) . esc_html( $err ), 'error' );
+			/* translators: %s: error message from API */
+			$err = $this->api_client->last_error() ?: esc_html__( 'M-Pesa STK push failed. Please try again.', 'dgmpesa-extension' );
+			wc_add_notice( esc_html__( 'M-Pesa error: ', 'dgmpesa-extension' ) . esc_html( $err ), 'error' );
 			return [ 'result' => 'failure', 'redirect' => '' ];
 		}
 
@@ -204,7 +206,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 			update_post_meta( $order_id, '_dg_mpesa_checkout_request_id', sanitize_text_field( $result['CheckoutRequestID'] ) );
 		}
 
-		$order->update_status( 'on-hold', esc_html__( 'Awaiting M-Pesa payment confirmation', 'dg-checkout-for-m-pesa' ) );
+		$order->update_status( 'on-hold', esc_html__( 'Awaiting M-Pesa payment confirmation', 'dgmpesa-extension' ) );
 		WC()->cart->empty_cart();
 
 		return [
@@ -223,6 +225,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 
 	private function log_pending_transaction( $order_id, $phone, $amount ) {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->insert(
 			$wpdb->prefix . 'dg_mpesa_transactions',
 			[
