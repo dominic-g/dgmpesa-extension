@@ -2,19 +2,19 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * DG_Mpesa_Webhook_Handler
+ * DOMILINA_Mpesa_Webhook_Handler
  *
  * Receives the M-Pesa STK-push callback from Safaricom, validates it, and
  * updates the corresponding WooCommerce order status.
  */
-class DG_Mpesa_Webhook_Handler {
+class DOMILINA_Mpesa_Webhook_Handler {
 
-	/** @var DG_Payment_Logger */
+	/** @var DOMILINA_Payment_Logger */
 	private $log;
 
 	public function __construct() {
-		$this->log = new DG_Payment_Logger();
-		add_action( 'woocommerce_api_dg_callback', [ $this, 'handle_incoming' ] );
+		$this->log = new DOMILINA_Payment_Logger();
+		add_action( 'woocommerce_api_domilina_callback', [ $this, 'handle_incoming' ] );
 	}
 
 	// -----------------------------------------------------------------------
@@ -83,7 +83,7 @@ class DG_Mpesa_Webhook_Handler {
 		if ( $amount_paid < $order->get_total() ) {
 			$note = sprintf(
 				/* translators: 1: amount paid, 2: expected total, 3: transaction receipt number */
-				__( 'Partial M-Pesa payment — paid: %1$s, expected: %2$s. Tx: %3$s', 'dgmpesa-extension' ),
+				__( 'Partial M-Pesa payment — paid: %1$s, expected: %2$s. Tx: %3$s', 'dominicn-lipa-na-mpesa-stk-push-checkout' ),
 				$amount_paid, $order->get_total(), $receipt
 			);
 			$order->update_status( 'on-hold', $note );
@@ -94,7 +94,7 @@ class DG_Mpesa_Webhook_Handler {
 		$order->payment_complete( $receipt );
 		$order->add_order_note( sprintf(
 			/* translators: %s: transaction receipt number */
-			__( 'M-Pesa payment received. Tx ID: %s', 'dgmpesa-extension' ),
+			__( 'M-Pesa payment received. Tx ID: %s', 'dominicn-lipa-na-mpesa-stk-push-checkout' ),
 			$receipt
 		) );
 		$this->finalise_log( $order->get_id(), $receipt, 'completed' );
@@ -109,11 +109,11 @@ class DG_Mpesa_Webhook_Handler {
 		$order->update_status(
 			'failed',
 			/* translators: %s: failure reason from M-Pesa */
-			sprintf( __( 'M-Pesa payment failed: %s', 'dgmpesa-extension' ), $reason )
+			sprintf( __( 'M-Pesa payment failed: %s', 'dominicn-lipa-na-mpesa-stk-push-checkout' ), $reason )
 		);
 		$order->add_order_note( sprintf(
 			/* translators: 1: M-Pesa result code, 2: failure reason */
-			__( 'M-Pesa failed — code: %1$s, reason: %2$s', 'dgmpesa-extension' ),
+			__( 'M-Pesa failed — code: %1$s, reason: %2$s', 'dominicn-lipa-na-mpesa-stk-push-checkout' ),
 			$stk['ResultCode'], $reason
 		) );
 		$this->finalise_log( $order->get_id(), '', 'failed' );
@@ -128,7 +128,7 @@ class DG_Mpesa_Webhook_Handler {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		return absint( $wpdb->get_var( $wpdb->prepare(
-			"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_dg_mpesa_checkout_request_id' AND meta_value = %s",
+			"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_domilina_mpesa_checkout_request_id' AND meta_value = %s",
 			$checkout_request_id
 		) ) );
 	}
@@ -137,7 +137,7 @@ class DG_Mpesa_Webhook_Handler {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$updated = $wpdb->update(
-			$wpdb->prefix . 'dg_mpesa_transactions',
+			$wpdb->prefix . 'domilina_mpesa_transactions',
 			[ 'transaction_id' => $tx_id, 'status' => $status ],
 			[ 'order_id' => $order_id, 'status' => 'pending' ],
 			[ '%s', '%s' ],

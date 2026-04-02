@@ -2,14 +2,14 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * DG_Payment_Logger
+ * DOMILINA_Payment_Logger
  *
  * Wraps WooCommerce's WC_Logger for plugin-specific debug messages.
  * Logs are written only when WP_DEBUG is active.
  */
-class DG_Payment_Logger {
+class DOMILINA_Payment_Logger {
 
-	private $handle = 'dg-mpesa';
+	private $handle = 'domilina-mpesa';
 	private $wc_log;
 
 	public function __construct() {
@@ -30,32 +30,32 @@ class DG_Payment_Logger {
 }
 
 /**
- * DG_Gateway_Installer
+ * DOMILINA_Gateway_Installer
  *
  * Handles plugin activation: creates the custom transactions table.
  */
-class DG_Gateway_Installer {
+class DOMILINA_Gateway_Installer {
 
 	/**
 	 * Run on plugin activation.
 	 */
 	public static function setup() {
 		if ( ! class_exists( 'WooCommerce' ) ) {
-			deactivate_plugins( plugin_basename( DG_MPESA_PLUGIN_FILE ) );
-			wp_die(
-				wp_kses_post( sprintf(
-					/* translators: 1: opening anchor tag, 2: closing anchor tag */
-					__( 'DG Lipa na Mpesa Checkout requires %1$sWooCommerce%2$s to be active before it can be activated.', 'dgmpesa-extension' ),
+		deactivate_plugins( plugin_basename( DOMILINA_MPESA_PLUGIN_FILE ) );
+		wp_die(
+			wp_kses_post( sprintf(
+				/* translators: 1: opening anchor tag, 2: closing anchor tag */
+				__( 'DG Lipa na Mpesa Checkout requires %1$sWooCommerce%2$s to be active before it can be activated.', 'dominicn-lipa-na-mpesa-stk-push-checkout' ),
 					'<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">',
 					'</a>'
 				) ),
-				esc_html__( 'Plugin Activation Error', 'dgmpesa-extension' ),
+				esc_html__( 'Plugin Activation Error', 'dominicn-lipa-na-mpesa-stk-push-checkout' ),
 				[ 'back_link' => true ]
 			);
 		}
 
 		global $wpdb;
-		$table      = $wpdb->prefix . 'dg_mpesa_transactions';
+		$table      = $wpdb->prefix . 'domilina_mpesa_transactions';
 		$collation  = $wpdb->get_charset_collate();
 
 		$ddl = "CREATE TABLE IF NOT EXISTS {$table} (

@@ -4,7 +4,7 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
 defined( 'ABSPATH' ) || exit;
 
 /**
- * DG_Mpesa_Block_Payment
+ * DOMILINA_Mpesa_Block_Payment
  *
  * Registers M-Pesa as a payment method in the WooCommerce Blocks checkout.
  * Extends AbstractPaymentMethodType to supply the JS script handle and
@@ -12,20 +12,20 @@ defined( 'ABSPATH' ) || exit;
  *
  * @extends AbstractPaymentMethodType
  */
-final class DG_Mpesa_Block_Payment extends AbstractPaymentMethodType {
+final class DOMILINA_Mpesa_Block_Payment extends AbstractPaymentMethodType {
 
 	/** @var string Must match the gateway's $id property. */
-	protected $name = 'dg_mpesa_checkout';
+	protected $name = 'domilina_mpesa_checkout';
 
 	/** @var string Script handle registered via wp_register_script. */
-	private const SCRIPT_HANDLE = 'dg-mpesa-block-checkout';
+	private const SCRIPT_HANDLE = 'domilina-mpesa-block-checkout';
 
 	// -----------------------------------------------------------------------
 	// Lifecycle
 	// -----------------------------------------------------------------------
 
 	public function initialize() {
-		$this->settings = get_option( 'woocommerce_dg_mpesa_checkout_settings', [] );
+		$this->settings = get_option( 'woocommerce_domilina_mpesa_checkout_settings', [] );
 	}
 
 	public function is_active() {
@@ -37,9 +37,9 @@ final class DG_Mpesa_Block_Payment extends AbstractPaymentMethodType {
 	// -----------------------------------------------------------------------
 
 	public function get_payment_method_script_handles() {
-		$asset_file = DG_MPESA_PLUGIN_PATH . 'assets/js/mpesa-block-checkout.asset.php';
+		$asset_file = DOMILINA_MPESA_PLUGIN_PATH . 'assets/js/mpesa-block-checkout.asset.php';
 
-		$version      = DG_MPESA_VERSION;
+		$version      = DOMILINA_MPESA_VERSION;
 		$dependencies = [ 'wc-blocks-registry', 'wc-settings', 'wp-element', 'wp-i18n', 'wp-polyfill' ];
 
 		if ( file_exists( $asset_file ) ) {
@@ -50,7 +50,7 @@ final class DG_Mpesa_Block_Payment extends AbstractPaymentMethodType {
 
 		wp_register_script(
 			self::SCRIPT_HANDLE,
-			DG_MPESA_PLUGIN_URL . 'assets/js/mpesa-block-checkout.js',
+			DOMILINA_MPESA_PLUGIN_URL . 'assets/js/mpesa-block-checkout.js',
 			$dependencies,
 			$version,
 			true

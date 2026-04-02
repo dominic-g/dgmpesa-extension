@@ -2,14 +2,14 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * DG_Mpesa_Payment_Gateway
+ * DOMILINA_Mpesa_Payment_Gateway
  *
  * WooCommerce payment gateway that fires an M-Pesa STK-push on checkout
  * and redirects customers to a real-time payment-confirmation screen.
  *
  * @extends WC_Payment_Gateway
  */
-class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
+class DOMILINA_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 
 	/** @var string Consumer key from Daraja. */
 	protected $consumer_key;
@@ -19,14 +19,14 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 	protected $environment;
 	protected $callback_url;
 
-	/** @var DG_Payment_Logger */
+	/** @var DOMILINA_Payment_Logger */
 	private $log;
 
-	/** @var DG_Mpesa_Api_Client */
+	/** @var DOMILINA_Mpesa_Api_Client */
 	private $api_client;
 
 	public function __construct() {
-		$this->id                 = 'dg_mpesa_checkout';
+		$this->id                 = 'domilina_mpesa_checkout';
 		$this->method_title       = 'M-Pesa';
 		$this->method_description = 'Accept M-Pesa payments in WooCommerce.';
 		$this->has_fields         = true;
@@ -44,15 +44,15 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 		$this->passkey         = $this->get_option( 'passkey' );
 		$this->environment     = $this->get_option( 'environment' );
 
-		$auto_callback       = add_query_arg( 'wc-api', 'dg_callback', home_url( '/' ) );
+		$auto_callback       = add_query_arg( 'wc-api', 'domilina_callback', home_url( '/' ) );
 		$stored_callback     = $this->get_option( 'callback_url' );
 		$this->callback_url  = ! empty( $stored_callback )
 			? untrailingslashit( $stored_callback )
 			: $auto_callback;
 
-		$this->log = new DG_Payment_Logger();
+		$this->log = new DOMILINA_Payment_Logger();
 
-		$this->api_client = new DG_Mpesa_Api_Client(
+		$this->api_client = new DOMILINA_Mpesa_Api_Client(
 			$this->consumer_key,
 			$this->consumer_secret,
 			$this->shortcode,
@@ -62,7 +62,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 		);
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
-		add_action( 'woocommerce_thankyou_' . $this->id, [ $this, 'redirect_if_pending' ] );
+		add_action( 'domilina_woocommerce_thankyou_' . $this->id, [ $this, 'redirect_if_pending' ] );
 		add_filter( 'woocommerce_gateway_title', [ $this, 'inject_logo_into_title' ], 10, 2 );
 	}
 
@@ -71,7 +71,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 	// -----------------------------------------------------------------------
 
 	public function init_form_fields() {
-		$default_cb = add_query_arg( 'wc-api', 'dg_callback', home_url( '/' ) );
+		$default_cb = add_query_arg( 'wc-api', 'domilina_callback', home_url( '/' ) );
 
 		$this->form_fields = [
 			'enabled' => [
@@ -143,23 +143,23 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 
 	public function payment_fields() {
 		?>
-		<div class="dg-mpesa-checkout-wrapper" style="font-family:'Jost',sans-serif;font-size:16px;">
-			<div class="dg-mpesa-checkout-description" style="margin-bottom:1rem;">
-				<?php esc_html_e( 'Enter your M-Pesa phone number to receive an STK push prompt.', 'dgmpesa-extension' ); ?>
+		<div class="domilina-mpesa-checkout-wrapper" style="font-family:'Jost',sans-serif;font-size:16px;">
+			<div class="domilina-mpesa-checkout-description" style="margin-bottom:1rem;">
+				<?php esc_html_e( 'Enter your M-Pesa phone number to receive an STK push prompt.', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?>
 			</div>
 
 			<?php wp_nonce_field( 'mpesa_checkout_action', 'mpesa_checkout_nonce_field' ); ?>
 
-			<div class="dg-mpesa-checkout-field" style="margin-bottom:1rem;">
+			<div class="domilina-mpesa-checkout-field" style="margin-bottom:1rem;">
 				<label for="mpesa_phone_number">
-					<?php esc_html_e( 'Phone Number', 'dgmpesa-extension' ); ?> <span class="required">*</span>
+					<?php esc_html_e( 'Phone Number', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?> <span class="required">*</span>
 				</label>
 				<input
 					type="text"
 					name="mpesa_phone_number"
 					id="mpesa_phone_number"
 					/* translators: placeholder Example phone number */
-					placeholder="<?php esc_attr_e( '07XXXXXXXX', 'dgmpesa-extension' ); ?>"
+					placeholder="<?php esc_attr_e( '07XXXXXXXX', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?>"
 					required
 					style="padding:0.6rem;width:100%;"
 				>
@@ -179,7 +179,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 			: '';
 
 		if ( ! wp_verify_nonce( $nonce, 'mpesa_checkout_action' ) ) {
-			wc_add_notice( esc_html__( 'Security check failed, please try again.', 'dgmpesa-extension' ), 'error' );
+			wc_add_notice( esc_html__( 'Security check failed, please try again.', 'dominicn-lipa-na-mpesa-stk-push-checkout' ), 'error' );
 			return [ 'result' => 'failure', 'redirect' => '' ];
 		}
 
@@ -197,16 +197,16 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 
 		if ( false === $result ) {
 			/* translators: %s: error message from API */
-			$err = $this->api_client->last_error() ?: esc_html__( 'M-Pesa STK push failed. Please try again.', 'dgmpesa-extension' );
-			wc_add_notice( esc_html__( 'M-Pesa error: ', 'dgmpesa-extension' ) . esc_html( $err ), 'error' );
+			$err = $this->api_client->last_error() ?: esc_html__( 'M-Pesa STK push failed. Please try again.', 'dominicn-lipa-na-mpesa-stk-push-checkout' );
+			wc_add_notice( esc_html__( 'M-Pesa error: ', 'dominicn-lipa-na-mpesa-stk-push-checkout' ) . esc_html( $err ), 'error' );
 			return [ 'result' => 'failure', 'redirect' => '' ];
 		}
 
 		if ( isset( $result['CheckoutRequestID'] ) ) {
-			update_post_meta( $order_id, '_dg_mpesa_checkout_request_id', sanitize_text_field( $result['CheckoutRequestID'] ) );
+			update_post_meta( $order_id, '_domilina_mpesa_checkout_request_id', sanitize_text_field( $result['CheckoutRequestID'] ) );
 		}
 
-		$order->update_status( 'on-hold', esc_html__( 'Awaiting M-Pesa payment confirmation', 'dgmpesa-extension' ) );
+		$order->update_status( 'on-hold', esc_html__( 'Awaiting M-Pesa payment confirmation', 'dominicn-lipa-na-mpesa-stk-push-checkout' ) );
 		WC()->cart->empty_cart();
 
 		return [
@@ -214,7 +214,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 			'redirect' => add_query_arg( [
 				'mpesa_waiting' => 'yes',
 				'order_id'      => $order_id,
-				'_wpnonce'      => wp_create_nonce( 'dg_waiting' ),
+				'_wpnonce'      => wp_create_nonce( 'domilina_waiting' ),
 			], home_url( '/' ) ),
 		];
 	}
@@ -227,7 +227,7 @@ class DG_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->insert(
-			$wpdb->prefix . 'dg_mpesa_transactions',
+			$wpdb->prefix . 'domilina_mpesa_transactions',
 			[
 				'order_id'       => $order_id,
 				'transaction_id' => '',

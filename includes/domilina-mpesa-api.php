@@ -2,13 +2,13 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * DG_Mpesa_Api_Client
+ * DOMILINA_Mpesa_Api_Client
  *
  * Communicates with Safaricom's M-Pesa Daraja API to:
  *   - generate an OAuth access token, and
  *   - fire an STK-push (Lipa na M-Pesa Online) request.
  */
-class DG_Mpesa_Api_Client {
+class DOMILINA_Mpesa_Api_Client {
 
 	private $consumer_key;
 	private $consumer_secret;
@@ -18,7 +18,7 @@ class DG_Mpesa_Api_Client {
 	private $env;
 	private $last_error = null;
 
-	/** @var DG_Payment_Logger */
+	/** @var DOMILINA_Payment_Logger */
 	private $log;
 
 	public function __construct( $key, $secret, $shortcode, $passkey, $callback, $env = 'sandbox' ) {
@@ -28,7 +28,7 @@ class DG_Mpesa_Api_Client {
 		$this->passkey         = $passkey;
 		$this->callback_url    = $callback;
 		$this->env             = $env;
-		$this->log             = new DG_Payment_Logger();
+		$this->log             = new DOMILINA_Payment_Logger();
 	}
 
 	/** @return string|null Last error message, or null on success. */

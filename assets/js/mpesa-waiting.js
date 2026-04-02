@@ -1,13 +1,13 @@
 jQuery(document).ready(function ($) {
 
-    if (typeof dgMpesaParams === 'undefined' || !dgMpesaParams.order_id) {
+    if (typeof domilinaMpesaParams === 'undefined' || !domilinaMpesaParams.order_id) {
         return;
     }
 
     var intervalId;
-    var orderId = dgMpesaParams.order_id;
-    var ajaxUrl = dgMpesaParams.ajax_url;
-    var nonce = dgMpesaParams.nonce;
+    var orderId = domilinaMpesaParams.order_id;
+    var ajaxUrl = domilinaMpesaParams.ajax_url;
+    var nonce = domilinaMpesaParams.nonce;
     var attempts = 0;
     var maxAttempts = 120;
 
@@ -25,7 +25,7 @@ jQuery(document).ready(function ($) {
             type: 'POST',
             url: ajaxUrl,
             data: {
-                action: 'dg_poll_status',
+                action: 'domilina_poll_status',
                 order_id: orderId,
                 nonce: nonce
             },

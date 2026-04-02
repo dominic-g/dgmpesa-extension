@@ -100,6 +100,30 @@ Your order stays in **On Hold** status. If the customer completes the STK Push o
 
 Yes. All form submissions use WordPress nonces, all inputs are sanitised, and the M-Pesa callback endpoint validates the incoming payload before processing.
 
+== External Services ==
+
+This plugin connects to the **Safaricom Daraja API** to facilitate M-Pesa payments. This external service is essential for processing STK Push payments in WooCommerce.
+
+**Service Provider:** Safaricom Limited
+
+**What It Is Used For:** Processing M-Pesa STK Push payment requests and receiving real-time payment status callbacks to update WooCommerce order statuses automatically.
+
+**Data Sent to the Service:**
+* Customer phone number (when initiating STK Push)
+* Transaction amount in Kenyan Shillings (KES)
+* Transaction reference/order details
+* Your configured Paybill Number or Till Number
+* Your merchant API credentials (Consumer Key, Consumer Secret)
+
+**When Data Is Sent:**
+* During checkout when a customer selects M-Pesa as the payment method and submits their phone number
+* The payment gateway initiates an STK Push to the customer's phone
+* M-Pesa sends a callback to your site with the payment status and transaction details
+
+**Terms and Privacy:**
+* Safaricom Daraja API Terms: [https://developer.safaricom.co.ke/](https://developer.safaricom.co.ke/)
+* Safaricom Privacy Policy: [https://www.safaricom.co.ke/personal/privacy-policy](https://www.safaricom.co.ke/personal/privacy-policy)
+
 == Changelog ==
 
 = 1.0.2 =

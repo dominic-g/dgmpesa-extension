@@ -5,7 +5,7 @@
  * Version:     1.0.4
  * Author:      Dominic_N
  * Author URI:  https://dominicn.dev
- * Text Domain: dgmpesa-extension
+ * Text Domain: dominicn-lipa-na-mpesa-stk-push-checkout
  * License:     GPLv2 or later
  * Requires Plugins: woocommerce
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,34 +17,34 @@ defined( 'ABSPATH' ) || exit;
 // Constants
 // ---------------------------------------------------------------------------
 
-define( 'DG_MPESA_VERSION',     '1.0.4' );
-define( 'DG_MPESA_PLUGIN_FILE', __FILE__ );
-define( 'DG_MPESA_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'DG_MPESA_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
+define( 'DOMILINA_MPESA_VERSION',     '1.0.4' );
+define( 'DOMILINA_MPESA_PLUGIN_FILE', __FILE__ );
+define( 'DOMILINA_MPESA_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'DOMILINA_MPESA_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 
 // ---------------------------------------------------------------------------
 // Early includes — no WooCommerce dependency
 // ---------------------------------------------------------------------------
 
 // Must be available before the activation hook fires.
-require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-core.php'; // DG_Gateway_Installer, DG_Payment_Logger
+require_once DOMILINA_MPESA_PLUGIN_PATH . 'includes/domilina-mpesa-core.php'; // DOMILINA_Gateway_Installer, DOMILINA_Payment_Logger
 
-// All other includes are loaded inside dg_mpesa_boot() after WooCommerce is confirmed present.
+// All other includes are loaded inside domilina_mpesa_boot() after WooCommerce is confirmed present.
 
 // ---------------------------------------------------------------------------
 // Activation / Deactivation hooks
 // ---------------------------------------------------------------------------
 
-register_activation_hook(   __FILE__, [ 'DG_Gateway_Installer', 'setup' ] );
-register_deactivation_hook( __FILE__, [ 'DG_Gateway_Installer', 'teardown' ] );
+register_activation_hook(   __FILE__, [ 'DOMILINA_Gateway_Installer', 'setup' ] );
+register_deactivation_hook( __FILE__, [ 'DOMILINA_Gateway_Installer', 'teardown' ] );
 
 // ---------------------------------------------------------------------------
 // Bootstrap on plugins_loaded
 // ---------------------------------------------------------------------------
 
-add_action( 'plugins_loaded', 'dg_mpesa_boot', 20 );
+add_action( 'plugins_loaded', 'domilina_mpesa_boot', 20 );
 
-function dg_mpesa_boot() {
+function domilina_mpesa_boot() {
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		// Auto-deactivate if active without WooCommerce
 		if ( ! function_exists( 'deactivate_plugins' ) ) {
@@ -57,7 +57,7 @@ function dg_mpesa_boot() {
 				'<div class="error"><p>%s</p></div>',
 				wp_kses_post( sprintf(
 					/* translators: 1: opening anchor tag, 2: closing anchor tag */
-					__( 'DG Lipa na Mpesa Checkout has been deactivated because it requires %1$sWooCommerce%2$s to be active.', 'dgmpesa-extension' ),
+					__( 'Lipa na Mpesa Checkout has been deactivated because it requires %1$sWooCommerce%2$s to be active.', 'dominicn-lipa-na-mpesa-stk-push-checkout' ),
 					'<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">',
 					'</a>'
 				) )
@@ -67,86 +67,86 @@ function dg_mpesa_boot() {
 	}
 
 	// Load WooCommerce-dependent classes now that WC is confirmed available.
-	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-api.php';     // DG_Mpesa_Api_Client
-	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-gateway.php'; // DG_Mpesa_Payment_Gateway
-	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-webhook.php'; // DG_Mpesa_Webhook_Handler
-	require_once DG_MPESA_PLUGIN_PATH . 'includes/dg-mpesa-admin.php';   // DG_Mpesa_Admin_Panel, DG_Mpesa_Tx_Queries
+	require_once DOMILINA_MPESA_PLUGIN_PATH . 'includes/domilina-mpesa-api.php';     // DOMILINA_Mpesa_Api_Client
+	require_once DOMILINA_MPESA_PLUGIN_PATH . 'includes/domilina-mpesa-gateway.php'; // DOMILINA_Mpesa_Payment_Gateway
+	require_once DOMILINA_MPESA_PLUGIN_PATH . 'includes/domilina-mpesa-webhook.php'; // DOMILINA_Mpesa_Webhook_Handler
+	require_once DOMILINA_MPESA_PLUGIN_PATH . 'includes/domilina-mpesa-admin.php';   // DOMILINA_Mpesa_Admin_Panel, DOMILINA_Mpesa_Tx_Queries
 
 	// Register the payment gateway with WooCommerce
 	add_filter( 'woocommerce_payment_gateways', static function ( $gateways ) {
-		$gateways[] = 'DG_Mpesa_Payment_Gateway';
+		$gateways[] = 'DOMILINA_Mpesa_Payment_Gateway';
 		return $gateways;
 	} );
 
 	// Boot admin panel
 	if ( is_admin() ) {
-		new DG_Mpesa_Admin_Panel();
+		new DOMILINA_Mpesa_Admin_Panel();
 	}
 
 	// Boot callback/webhook listener
-	new DG_Mpesa_Webhook_Handler();
+	new DOMILINA_Mpesa_Webhook_Handler();
 
 	// ---------------------------------------------------------------------------
 	// Hooks that depend on WooCommerce
 	// ---------------------------------------------------------------------------
 
 	// Block checkout integration
-	add_action( 'woocommerce_blocks_payment_method_type_registration', 'dg_mpesa_init_blocks' );
+	add_action( 'woocommerce_blocks_payment_method_type_registration', 'domilina_mpesa_init_blocks' );
 
 	// Front-end asset enqueueing
-	add_action( 'wp_enqueue_scripts', 'dg_mpesa_enqueue_frontend' );
+	add_action( 'wp_enqueue_scripts', 'domilina_mpesa_enqueue_frontend' );
 
 	// Template intercept: render waiting screen before theme loads
-	add_action( 'template_redirect', 'dg_mpesa_intercept_template' );
+	add_action( 'template_redirect', 'domilina_mpesa_intercept_template' );
 
 	// AJAX: poll WooCommerce order status (used by the waiting-screen JS)
-	add_action( 'wp_ajax_dg_poll_status',        'dg_mpesa_handle_poll' );
-	add_action( 'wp_ajax_nopriv_dg_poll_status', 'dg_mpesa_handle_poll' );
+	add_action( 'wp_ajax_domilina_poll_status',        'domilina_mpesa_handle_poll' );
+	add_action( 'wp_ajax_nopriv_domilina_poll_status', 'domilina_mpesa_handle_poll' );
 }
 
 // ---------------------------------------------------------------------------
 // Block checkout integration registration (logic moved inside boot)
 // ---------------------------------------------------------------------------
 
-function dg_mpesa_init_blocks( \Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $registry ) {
-	require_once DG_MPESA_PLUGIN_PATH . 'includes/blocks/dg-mpesa-blocks.php';
-	$registry->register( new DG_Mpesa_Block_Payment() );
+function domilina_mpesa_init_blocks( \Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $registry ) {
+	require_once DOMILINA_MPESA_PLUGIN_PATH . 'includes/blocks/domilina-mpesa-blocks.php';
+	$registry->register( new DOMILINA_Mpesa_Block_Payment() );
 }
 
 // Front-end asset enqueueing logic
-function dg_mpesa_enqueue_frontend() {
+function domilina_mpesa_enqueue_frontend() {
 	wp_enqueue_style(
-		'dg_mpesa_jost_font_frontend',
+		'domilina_mpesa_jost_font_frontend',
 		'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap',
 		[],
 		'1.0'
 	);
 
-	if ( is_checkout() || dg_mpesa_on_pending_screen() ) {
+	if ( is_checkout() || domilina_mpesa_on_pending_screen() ) {
 		wp_enqueue_style(
-			'dg_mpesa_frontend_styles',
-			DG_MPESA_PLUGIN_URL . 'assets/css/mpesa-frontend-styles.css',
-			[ 'dg_mpesa_jost_font_frontend' ],
-			DG_MPESA_VERSION
+			'domilina_mpesa_frontend_styles',
+			DOMILINA_MPESA_PLUGIN_URL . 'assets/css/mpesa-frontend-styles.css',
+			[ 'domilina_mpesa_jost_font_frontend' ],
+			DOMILINA_MPESA_VERSION
 		);
 	}
 
-	if ( dg_mpesa_on_pending_screen() ) {
+	if ( domilina_mpesa_on_pending_screen() ) {
 		$get_order_id = filter_input( INPUT_GET, 'order_id', FILTER_SANITIZE_NUMBER_INT );
 		$order_id     = $get_order_id ? absint( $get_order_id ) : 0;
 
 		wp_enqueue_script(
-			'dg_mpesa_waiting_script',
-			DG_MPESA_PLUGIN_URL . 'assets/js/mpesa-waiting.js',
+			'domilina_mpesa_waiting_script',
+			DOMILINA_MPESA_PLUGIN_URL . 'assets/js/mpesa-waiting.js',
 			[ 'jquery' ],
-			DG_MPESA_VERSION,
+			DOMILINA_MPESA_VERSION,
 			true
 		);
 
-		wp_localize_script( 'dg_mpesa_waiting_script', 'dgMpesaParams', [
+		wp_localize_script( 'domilina_mpesa_waiting_script', 'domilinaParams', [
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'order_id' => $order_id,
-			'nonce'    => wp_create_nonce( 'dg_poll_status' ),
+			'nonce'    => wp_create_nonce( 'domilina_poll_status' ),
 		] );
 	}
 }
@@ -155,11 +155,17 @@ function dg_mpesa_enqueue_frontend() {
 // Helper: detect the M-Pesa payment-pending screen
 // ---------------------------------------------------------------------------
 
-function dg_mpesa_on_pending_screen() {
+function domilina_mpesa_on_pending_screen() {
+	// Validate nonce first before any other checks
+	$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+	
+	if ( ! wp_verify_nonce( $nonce, 'domilina_waiting' ) ) {
+		return false;
+	}
+
 	return (
-		isset( $_GET['mpesa_waiting'], $_GET['order_id'], $_GET['_wpnonce'] ) &&
-		'yes' === $_GET['mpesa_waiting'] &&
-		wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'dg_waiting' )
+		isset( $_GET['mpesa_waiting'], $_GET['order_id'] ) &&
+		'yes' === $_GET['mpesa_waiting']
 	);
 }
 
@@ -167,27 +173,28 @@ function dg_mpesa_on_pending_screen() {
 // Template intercept: render waiting screen before theme loads
 // ---------------------------------------------------------------------------
 
-function dg_mpesa_intercept_template() {
-	if ( ! dg_mpesa_on_pending_screen() ) {
+function domilina_mpesa_intercept_template() {
+	if ( ! domilina_mpesa_on_pending_screen() ) {
 		return;
 	}
-
-	$order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0;
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0; 
 	$order    = $order_id ? wc_get_order( $order_id ) : null;
 
 	// Authorisation check
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$key           = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : '';
 	$valid_user    = is_user_logged_in() && $order &&
 	                 ( $order->get_user_id() === get_current_user_id() || current_user_can( 'manage_woocommerce' ) );
 	$valid_guest   = ! is_user_logged_in() && $order &&
 	                 method_exists( $order, 'key_is_valid' ) && $order->key_is_valid( $key );
 
-	if ( ! $order || ( ! $valid_user && ! $valid_guest ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ?? '' ) ), 'dg_waiting' ) ) {
+	if ( ! $order || ( ! $valid_user && ! $valid_guest ) ) {
 		wp_safe_redirect( home_url( '/' ) );
 		exit;
 	}
 
-	dg_mpesa_render_pending_page( $order_id );
+	domilina_mpesa_render_pending_page( $order_id );
 	exit;
 }
 
@@ -195,10 +202,10 @@ function dg_mpesa_intercept_template() {
 // AJAX: poll WooCommerce order status registration (logic moved inside boot)
 // ---------------------------------------------------------------------------
 
-function dg_mpesa_handle_poll() {
+function domilina_mpesa_handle_poll() {
 	$nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
 
-	if ( ! wp_verify_nonce( $nonce, 'dg_poll_status' ) ) {
+	if ( ! wp_verify_nonce( $nonce, 'domilina_poll_status' ) ) {
 		wp_send_json_error( [ 'status' => 'error', 'message' => 'Nonce verification failed.' ] );
 	}
 
@@ -218,71 +225,28 @@ function dg_mpesa_handle_poll() {
 		] );
 	} elseif ( in_array( $status, [ 'failed', 'cancelled' ], true ) ) {
 		wp_send_json_success( [
-			'status'   => 'failure',
-			'redirect' => $order->get_checkout_order_received_url(),
+			'status'   => 'failed',
+			'redirect' => wc_get_page_permalink( 'checkout' ),
 		] );
 	} else {
-		wp_send_json_success( [ 'status' => $status ] );
+		// Order still pending, return waiting
+		wp_send_json_success( [
+			'status' => 'pending',
+		] );
 	}
 }
 
 // ---------------------------------------------------------------------------
-// Render: the full-page payment-pending screen
+// Helper to render the pending/waiting screen HTML
 // ---------------------------------------------------------------------------
 
-function dg_mpesa_render_pending_page( $order_id ) {
+function domilina_mpesa_render_pending_page( $order_id ) {
 	$order = wc_get_order( $order_id );
 
 	if ( ! $order ) {
-		wp_die( esc_html__( 'Invalid order specified.', 'dgmpesa-extension' ) );
+		return;
 	}
 
-	$logo_url  = DG_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png';
-
-	// Enqueue styles properly for wp_head() to pick up
-	wp_enqueue_style(
-		'dg-mpesa-jost',
-		'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap',
-		[],
-		'1.0'
-	);
-	wp_enqueue_style(
-		'dg-mpesa-waiting',
-		DG_MPESA_PLUGIN_URL . 'assets/css/mpesa-frontend-styles.css',
-		[ 'dg-mpesa-jost' ],
-		DG_MPESA_VERSION
-	);
-
-	?>
-	<!DOCTYPE html>
-	<html <?php language_attributes(); ?>>
-	<head>
-		<meta charset="<?php bloginfo( 'charset' ); ?>" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<?php wp_head(); ?>
-		<title><?php esc_html_e( 'Awaiting M-Pesa Payment', 'dgmpesa-extension' ); ?></title>
-	</head>
-	<body <?php body_class( 'mpesa-waiting-body' ); ?>>
-		<div id="mpesa-waiting-container-main" class="mpesa-waiting-container">
-			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php esc_attr_e( 'M-Pesa Logo', 'dgmpesa-extension' ); ?>" class="mpesa-waiting-logo">
-
-			<div class="mpesa-waiting-spinner">
-				<svg viewBox="25 25 50 50"><circle cx="50" cy="50" r="20"></circle></svg>
-			</div>
-
-			<h2 id="mpesa-waiting-title"><?php esc_html_e( 'Please Confirm Payment on Your Phone', 'dgmpesa-extension' ); ?></h2>
-			<p class="mpesa-instruction" id="mpesa-waiting-instruction">
-				<?php esc_html_e( 'An M-Pesa payment request has been sent. Enter your M-Pesa PIN to authorise.', 'dgmpesa-extension' ); ?>
-			</p>
-
-			<div class="mpesa-waiting-info">
-				<p><strong><?php esc_html_e( 'Order Number:', 'dgmpesa-extension' ); ?></strong> #<?php echo esc_html( $order->get_order_number() ); ?></p>
-				<p><strong><?php esc_html_e( 'Amount:', 'dgmpesa-extension' ); ?></strong> <?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></p>
-				<p><small><em id="mpesa-waiting-status-text"><?php esc_html_e( 'Waiting for M-Pesa confirmation…', 'dgmpesa-extension' ); ?></em></small></p>
-			</div>
-		</div>
-		<?php wp_footer(); ?>
-	</body>
-	</html>
-	<?php
+	// Load the pending/waiting screen template
+	include DOMILINA_MPESA_PLUGIN_PATH . 'domilina_thankyou-mpesa_checkout.php';
 }

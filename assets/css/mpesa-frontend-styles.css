@@ -44,14 +44,14 @@ body.mpesa-waiting-body { display: flex; justify-content: center; align-items: c
 .mpesa-account-link a:hover { text-decoration: none; color: #0a4b78; border-color: #0a4b78; }
 
 /* --- Checkout Page Field Styles --- */
-div.dg-mpesa-checkout-wrapper { padding: 20px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; margin: 0 0 1.5em; font-family: 'Jost', sans-serif !important; font-size: 16px !important; }
-div.dg-mpesa-checkout-description { font-size: 1em; margin-bottom: 1.2em !important; color: #4b5563; line-height: 1.6; }
-div.dg-mpesa-checkout-field { margin-bottom: 0 !important; }
-div.dg-mpesa-checkout-field label { display: block; margin-bottom: 0.6em; font-weight: 600; font-size: 0.95em; color: #374151; }
-div.dg-mpesa-checkout-field label .required { color: #ef4444; margin-left: 3px; font-weight: normal; }
-div.dg-mpesa-checkout-field input[type="text"] { padding: 0.8em 1em !important; width: 100% !important; border: 1px solid #d1d5db; border-radius: 5px; box-sizing: border-box; font-family: 'Jost', sans-serif; font-size: 1em; color: #1f2937; transition: border-color 0.2s, box-shadow 0.2s; }
-div.dg-mpesa-checkout-field input[type="text"]:focus { border-color: #4CAF50; box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2); outline: none; }
-div.dg-mpesa-checkout-field input[type="text"]::placeholder { color: #9ca3af; opacity: 1; }
+div.domilina-mpesa-checkout-wrapper { padding: 20px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; margin: 0 0 1.5em; font-family: 'Jost', sans-serif !important; font-size: 16px !important; }
+div.domilina-mpesa-checkout-description { font-size: 1em; margin-bottom: 1.2em !important; color: #4b5563; line-height: 1.6; }
+div.domilina-mpesa-checkout-field { margin-bottom: 0 !important; }
+div.domilina-mpesa-checkout-field label { display: block; margin-bottom: 0.6em; font-weight: 600; font-size: 0.95em; color: #374151; }
+div.domilina-mpesa-checkout-field label .required { color: #ef4444; margin-left: 3px; font-weight: normal; }
+div.domilina-mpesa-checkout-field input[type="text"] { padding: 0.8em 1em !important; width: 100% !important; border: 1px solid #d1d5db; border-radius: 5px; box-sizing: border-box; font-family: 'Jost', sans-serif; font-size: 1em; color: #1f2937; transition: border-color 0.2s, box-shadow 0.2s; }
+div.domilina-mpesa-checkout-field input[type="text"]:focus { border-color: #4CAF50; box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2); outline: none; }
+div.domilina-mpesa-checkout-field input[type="text"]::placeholder { color: #9ca3af; opacity: 1; }
 
 
 
