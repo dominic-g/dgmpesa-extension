@@ -5,8 +5,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$domilina_order_id  = absint( get_query_var( 'order-received' ) );
-$domilina_order     = wc_get_order( $domilina_order_id );
+$domilina_order_id = absint( get_query_var( 'order-received' ) );
+
+
+$domilina_order = wc_get_order( $domilina_order_id );
 
 if ( ! $domilina_order ) {
 	return;

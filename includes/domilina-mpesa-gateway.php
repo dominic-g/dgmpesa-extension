@@ -239,12 +239,24 @@ class DOMILINA_Mpesa_Payment_Gateway extends WC_Payment_Gateway {
 		);
 	}
 
-	public function redirect_if_pending( $order_id ) {
+	/*public function redirect_if_pending( $order_id ) {
 		$order = wc_get_order( $order_id );
 		if ( $order && $order->has_status( 'on-hold' ) ) {
 			wp_safe_redirect( add_query_arg( [ 'mpesa_waiting' => 'yes', 'order_id' => $order_id ], home_url( '/' ) ) );
 			exit;
 		}
+	}*/
+
+	public function redirect_if_pending( $order_id ) {
+	    $order = wc_get_order( $order_id );
+	    if ( $order && $order->get_payment_method() === $this->id && $order->has_status( 'on-hold' ) ) {
+	        wp_safe_redirect( add_query_arg( [ 
+	            'mpesa_waiting' => 'yes', 
+	            'order_id'      => $order_id,
+	            '_wpnonce'      => wp_create_nonce( 'domilina_waiting' ) 
+	        ], home_url( '/' ) ) );
+	        exit;
+	    }
 	}
 
 	public function inject_logo_into_title( $title, $id ) {

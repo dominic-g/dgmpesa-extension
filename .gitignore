@@ -2,3 +2,5 @@
 .distignore
 zipperignore
 dgmpesa-extension.zip
+generate_output.php
+output.txt

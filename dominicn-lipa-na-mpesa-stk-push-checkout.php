@@ -143,7 +143,7 @@ function domilina_mpesa_enqueue_frontend() {
 			true
 		);
 
-		wp_localize_script( 'domilina_mpesa_waiting_script', 'domilinaParams', [
+		wp_localize_script( 'domilina_mpesa_waiting_script', 'domilinaMpesaParams', [
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'order_id' => $order_id,
 			'nonce'    => wp_create_nonce( 'domilina_poll_status' ),
@@ -244,9 +244,67 @@ function domilina_mpesa_render_pending_page( $order_id ) {
 	$order = wc_get_order( $order_id );
 
 	if ( ! $order ) {
-		return;
+		wp_die( esc_html__( 'Invalid order specified.', 'dominicn-lipa-na-mpesa-stk-push-checkout' ) );
 	}
 
-	// Load the pending/waiting screen template
-	include DOMILINA_MPESA_PLUGIN_PATH . 'domilina_thankyou-mpesa_checkout.php';
+	$logo_url = DOMILINA_MPESA_PLUGIN_URL . 'assets/img/mpesa-logo.png';
+
+	// Enqueue styles properly so they appear in wp_head()
+	wp_enqueue_style(
+		'domilina_mpesa_jost',
+		'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap',
+		[],
+		'1.0'
+	);
+	wp_enqueue_style(
+		'domilina_mpesa_waiting_css',
+		DOMILINA_MPESA_PLUGIN_URL . 'assets/css/mpesa-frontend-styles.css',
+		[ 'domilina_mpesa_jost' ],
+		DOMILINA_MPESA_VERSION
+	);
+
+	?>
+	<!DOCTYPE html>
+	<html <?php language_attributes(); ?>>
+	<head>
+		<meta charset="<?php bloginfo( 'charset' ); ?>" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<?php wp_head(); ?>
+		<title><?php esc_html_e( 'Awaiting M-Pesa Payment', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?></title>
+	</head>
+	<body <?php body_class( 'mpesa-waiting-body' ); ?>>
+		<div id="mpesa-waiting-container-main" class="mpesa-waiting-container">
+			<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php esc_attr_e( 'M-Pesa Logo', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?>" class="mpesa-waiting-logo">
+
+			<div class="mpesa-waiting-spinner">
+				<svg viewBox="25 25 50 50"><circle cx="50" cy="50" r="20"></circle></svg>
+			</div>
+
+			<!-- These IDs are critical! assets/js/mpesa-waiting.js needs them to update the text -->
+			<h2 id="mpesa-waiting-title"><?php esc_html_e( 'Please Confirm Payment on Your Phone', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?></h2>
+			
+			<p class="mpesa-instruction" id="mpesa-waiting-instruction">
+				<?php esc_html_e( 'An M-Pesa payment request has been sent. Enter your M-Pesa PIN to authorise.', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?>
+			</p>
+
+			<div class="mpesa-waiting-info">
+				<p><strong><?php esc_html_e( 'Order Number:', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?></strong> #<?php echo esc_html( $order->get_order_number() ); ?></p>
+				<p><strong><?php esc_html_e( 'Amount:', 'dominicn-lipa-na-mpesa-stk-push-checkout' ); ?></strong> <?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></p>
+				<p>
+					<small>
+						<em id="mpesa-waiting-status-text">
+							<?php printf( 
+								/* translators: %s: Current order status */
+								esc_html__( 'Current status: %s', 'dominicn-lipa-na-mpesa-stk-push-checkout' ), 
+								esc_html( ucfirst( $order->get_status() ) ) 
+							); ?>
+						</em>
+					</small>
+				</p>
+			</div>
+		</div>
+		<?php wp_footer(); ?>
+	</body>
+	</html>
+	<?php
 }
