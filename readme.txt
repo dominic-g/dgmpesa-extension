@@ -121,8 +121,8 @@ This plugin connects to the **Safaricom Daraja API** to facilitate M-Pesa paymen
 * M-Pesa sends a callback to your site with the payment status and transaction details
 
 **Terms and Privacy:**
-* Safaricom Daraja API Terms: [https://developer.safaricom.co.ke/](https://developer.safaricom.co.ke/)
-* Safaricom Privacy Policy: [https://www.safaricom.co.ke/personal/privacy-policy](https://www.safaricom.co.ke/personal/privacy-policy)
+* Safaricom Daraja API Terms: [https://developer.safaricom.co.ke/terms](https://developer.safaricom.co.ke/terms)
+* Safaricom Privacy Policy: [https://www.safaricom.co.ke/dataprivacystatement/](https://www.safaricom.co.ke/dataprivacystatement/)
 
 == Changelog ==
 
@@ -141,3 +141,6 @@ This plugin connects to the **Safaricom Daraja API** to facilitate M-Pesa paymen
 * Updated the plugin name and slug to avoid trademark and project name confusion
 * Updated the chartjs version to the latest version 4.5.0
 * Added woocommerce as required plugin
+* Changed the prefix from dg to domilina to ensure it complies with wordpress length requirements
+* Added 3rd Party documentaion and their terms and privacy policy
+* Internationalization Fixing Text Domain to mactch plugin slug dominicn-lipa-na-mpesa-stk-push-checkout

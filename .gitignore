@@ -1,6 +1,8 @@
 .gio*
 .distignore
 zipperignore
+.zipperignore
 dgmpesa-extension.zip
+dominicn-lipa-na-mpesa-stk-push-checkout
 generate_output.php
 output.txt
